@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BabyAGI: A Technical History</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f5f3ef;
+  --bg-alt: #eae7e1;
+  --text: #1a1a1a;
+  --text-dim: #6b6560;
+  --text-faint: #9b9590;
+  --border: #d4cfc8;
+  --border-light: #e6e2db;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'EB Garamond', Georgia, serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #1a1a1a; color: var(--bg); }
+
+/* Layout */
+.container { max-width: 820px; margin: 0 auto; padding: 0 2rem; }
+
+/* Header */
+header {
+  padding: 6rem 0 4rem;
+  border-bottom: 1px solid var(--border);
+}
+header h1 {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1.5rem;
+}
+header .title {
+  font-family: var(--serif);
+  font-size: 2.8rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+header .subtitle {
+  font-size: 1.15rem;
+  color: var(--text-dim);
+  max-width: 600px;
+  line-height: 1.6;
+}
+header .meta {
+  margin-top: 2rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  letter-spacing: 0.05em;
+}
+
+/* Navigation */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.75rem 0;
+  margin-bottom: 1rem;
+}
+nav .container {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+nav .container::-webkit-scrollbar { display: none; }
+nav a {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-decoration: none;
+  color: var(--text-faint);
+  white-space: nowrap;
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  transition: color 0.2s, background 0.2s;
+  letter-spacing: 0.03em;
+}
+nav a:hover { color: var(--text); background: var(--bg-alt); }
+
+/* Sections */
+.version {
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.version:last-of-type { border-bottom: none; }
+
+.version-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.3rem;
+}
+.version-name {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.version-date {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+.version-loc {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  margin-bottom: 1.8rem;
+}
+
+.version p {
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+.version p.dim { color: var(--text-dim); }
+
+/* Code blocks */
+pre {
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--text);
+  border-radius: 2px;
+}
+code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  background: var(--bg-alt);
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
+pre code { background: none; padding: 0; font-size: 1em; }
+
+/* Architecture diagrams (ASCII) */
+.arch {
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  padding: 1.5rem 2rem;
+  margin: 1.5rem 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--text-dim);
+  border-radius: 2px;
+}
+
+/* Section labels */
+.label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.6rem;
+  margin-top: 2rem;
+}
+
+/* Key insight callouts */
+.insight {
+  border-left: 2px solid var(--border);
+  padding: 0.8rem 0 0.8rem 1.2rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 1rem;
+}
+
+/* Stats grid */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--border-light);
+  border: 1px solid var(--border-light);
+  margin: 1.5rem 0;
+  border-radius: 2px;
+}
+.stat {
+  background: var(--bg);
+  padding: 1rem 1.2rem;
+}
+.stat-value {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Diff-style additions */
+.diff-add { color: #3a6b35; }
+.diff-context { color: var(--text-dim); }
+
+/* Timeline connector */
+.timeline-gap {
+  text-align: center;
+  padding: 2rem 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+/* Footer */
+footer {
+  padding: 3rem 0 4rem;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  letter-spacing: 0.03em;
+}
+
+/* Comparison table — breaks out of container to full width */
+.comparison-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0 2rem;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+.comparison-table th {
+  text-align: left;
+  padding: 0.7rem 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+.comparison-table th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--bg-alt);
+  padding-left: 1.2rem;
+}
+.comparison-table td {
+  padding: 0.55rem 1.2rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+  vertical-align: top;
+}
+.comparison-table td:first-child {
+  font-weight: 500;
+  color: var(--text-dim);
+  white-space: nowrap;
+  background: var(--bg);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding-left: 1.2rem;
+}
+.comparison-table td:last-child,
+.comparison-table th:last-child {
+  padding-right: 1.2rem;
+}
+.comparison-table tbody tr:hover td { background: var(--bg-alt); }
+.comparison-table tbody tr:hover td:first-child { background: var(--bg-alt); }
+.comparison-table td.highlight {
+  color: var(--text);
+  font-weight: 500;
+}
+.comparison-table a {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+}
+.comparison-table a:hover { border-color: var(--text); }
+
+/* Summary section */
+.summary {
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.summary p {
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+  max-width: 700px;
+}
+.summary p.dim {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+}
+
+/* Phase markers */
+.phase-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  display: inline-block;
+  margin-bottom: 0.3rem;
+}
+
+/* (timeline visualization CSS removed — using comparison table instead) */
+
+/* ─── Aside / sidebar section ─── */
+.aside-section {
+  background: #edeae4;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 0;
+  margin: 0.5rem 0;
+}
+.aside-section .version-name {
+  font-size: 1.4rem;
+}
+.aside-section p {
+  font-size: 1.02rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+.aside-section p.dim { color: var(--text-dim); }
+.aside-section .label { margin-top: 1.8rem; }
+.aside-section code {
+  background: #d4cfc8;
+}
+.aside-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.aside-card {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1.2rem;
+  background: var(--bg);
+}
+.aside-card-title {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.aside-card-date {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--text-faint);
+  margin-bottom: 0.8rem;
+}
+.aside-card p {
+  font-size: 0.92rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+.aside-card code {
+  font-size: 0.8em;
+}
+@media (max-width: 640px) {
+  .aside-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Complexity heatmap ─── */
+.heatmap-wrap {
+  margin: 1.5rem 0 2rem;
+}
+.heatmap {
+  display: grid;
+  grid-template-columns: auto repeat(9, 1fr);
+  gap: 2px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  max-width: 700px;
+}
+.heatmap-header {
+  text-align: center;
+  color: var(--text-dim);
+  font-weight: 500;
+  padding: 0.4rem 0.3rem;
+  font-size: 0.58rem;
+}
+.heatmap-row-label {
+  color: var(--text-dim);
+  padding: 0.4rem 0.6rem 0.4rem 0;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.58rem;
+}
+.heatmap-cell {
+  text-align: center;
+  padding: 0.4rem 0.2rem;
+  border-radius: 2px;
+  color: var(--text-faint);
+  font-size: 0.56rem;
+}
+.heatmap-cell.l0 { background: var(--bg); }
+.heatmap-cell.l1 { background: #e8e4dd; color: var(--text-dim); }
+.heatmap-cell.l2 { background: #d4cfc8; color: var(--text-dim); }
+.heatmap-cell.l3 { background: #b8b0a5; color: var(--bg); }
+.heatmap-cell.l4 { background: #8a8078; color: var(--bg); }
+.heatmap-cell.l5 { background: #5a524a; color: var(--bg); }
+.heatmap-cell.l6 { background: #1a1a1a; color: var(--bg); font-weight: 500; }
+
+/* ─── Code anatomy bar chart ─── */
+.anatomy-chart {
+  margin: 1.5rem 0 2rem;
+  max-width: 700px;
+}
+.anatomy-row {
+  display: grid;
+  grid-template-columns: 85px 1fr 45px;
+  align-items: center;
+  margin-bottom: 3px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+}
+.anatomy-label {
+  color: var(--text-dim);
+  text-align: right;
+  padding-right: 0.8rem;
+  font-size: 0.58rem;
+}
+.anatomy-bar-wrap {
+  height: 18px;
+  display: flex;
+  gap: 1px;
+}
+.anatomy-segment {
+  height: 100%;
+  border-radius: 1px;
+  transition: opacity 0.2s;
+}
+.anatomy-segment:hover { opacity: 0.8; }
+.seg-core { background: #1a1a1a; }
+.seg-tools { background: #5a524a; }
+.seg-memory { background: #8a8078; }
+.seg-io { background: #b8b0a5; }
+.seg-infra { background: #d4cfc8; }
+.anatomy-total {
+  color: var(--text-faint);
+  padding-left: 0.5rem;
+  font-size: 0.56rem;
+}
+.anatomy-legend {
+  display: flex;
+  gap: 1.2rem;
+  margin-top: 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+}
+.anatomy-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.anatomy-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  header .title { font-size: 2rem; }
+  .version-name { font-size: 1.5rem; }
+  .container { padding: 0 1.2rem; }
+  .version { padding: 3rem 0; }
+  header { padding: 4rem 0 3rem; }
+  .version-header { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+  <h1>Technical History</h1>
+  <div class="title">BabyAGI</div>
+  <div class="subtitle">One person's three-year journey exploring autonomous agents through code. Nine versions, nine different bets on how to build an AI that can act on its own — traced through the source.</div>
+  <div class="meta">April 2023 – February 2026 &nbsp;·&nbsp; Yohei Nakajima &nbsp;·&nbsp; Analysis from source code</div>
+</div>
+</header>
+
+<nav>
+<div class="container">
+  <a href="#original">BabyAGI</a>
+  <a href="#bee">Bee</a>
+  <a href="#cat">Cat</a>
+  <a href="#deer">Deer</a>
+  <a href="#elf">Elf</a>
+  <a href="#fox">Fox</a>
+  <a href="#v2">v2</a>
+  <a href="#v2o">2o</a>
+  <a href="#v3">v3</a>
+  <a href="#evolution">Evolution</a>
+  <a href="#timeline">Timeline</a>
+</div>
+</nav>
+
+<main>
+<div class="container">
+
+<!-- ═══════════════════════════ SUMMARY ═══════════════════════════ -->
+<section class="summary" id="summary">
+<div class="label">Overview</div>
+
+<p>BabyAGI started as a weekend experiment: 138 lines of Python that looped forever, chaining LLM calls to execute tasks. Over three years and nine iterations, it became a testing ground for every major idea in autonomous agent design — task graphs, parallel execution, plugin systems, self-extending tools, persistent memory, multi-channel I/O. Each version asked a different question about what it takes to build an agent that can actually do things on its own.</p>
+
+<p class="dim">The journey mirrors the broader evolution of the agent ecosystem. The <strong>classic era</strong> (Apr–Sep 2023) explored task list architectures during the initial burst of excitement after GPT-4. The <strong>framework era</strong> (Sep–Oct 2024) reconsidered the problem from first principles as tool-calling APIs matured. The <strong>production era</strong> (Feb 2026) confronted everything the earlier versions ignored: error recovery, context management, concurrency, and real-world I/O.</p>
+
+<div class="label">Comparison</div>
+
+<div class="comparison-wrap">
+<table class="comparison-table">
+<thead>
+<tr>
+  <th></th>
+  <th><a href="#original">BabyAGI</a></th>
+  <th><a href="#bee">Bee</a></th>
+  <th><a href="#cat">Cat</a></th>
+  <th><a href="#deer">Deer</a></th>
+  <th><a href="#elf">Elf</a></th>
+  <th><a href="#fox">Fox</a></th>
+  <th><a href="#v2">v2</a></th>
+  <th><a href="#v2o">2o</a></th>
+  <th><a href="#v3">v3</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Date</td>
+  <td>Apr '23</td>
+  <td>Apr '23</td>
+  <td>May '23</td>
+  <td>Jun '23</td>
+  <td>Jul '23</td>
+  <td>Sep '23</td>
+  <td>Sep '24</td>
+  <td>Oct '24</td>
+  <td>Feb '26</td>
+</tr>
+<tr>
+  <td>Lines</td>
+  <td>138</td>
+  <td>300</td>
+  <td>320</td>
+  <td>354</td>
+  <td>887</td>
+  <td>2,299</td>
+  <td>5,962</td>
+  <td class="highlight">174</td>
+  <td class="highlight">33,506</td>
+</tr>
+<tr>
+  <td>Files</td>
+  <td>1</td>
+  <td>1</td>
+  <td>1</td>
+  <td>1</td>
+  <td>11</td>
+  <td>25+</td>
+  <td>40+</td>
+  <td>1</td>
+  <td>70+</td>
+</tr>
+<tr>
+  <td>Model</td>
+  <td>davinci-003</td>
+  <td>GPT-4</td>
+  <td>GPT-4 + 3.5</td>
+  <td>GPT-3.5</td>
+  <td>GPT-3.5</td>
+  <td>GPT-3.5-16k</td>
+  <td>any</td>
+  <td>any (litellm)</td>
+  <td>any (litellm)</td>
+</tr>
+<tr>
+  <td>Planning</td>
+  <td>per-loop</td>
+  <td>dynamic replan</td>
+  <td>upfront</td>
+  <td>upfront</td>
+  <td>upfront + reflect</td>
+  <td>upfront + reflect</td>
+  <td>—</td>
+  <td>implicit (LLM)</td>
+  <td>implicit (LLM)</td>
+</tr>
+<tr>
+  <td>Execution</td>
+  <td>sequential</td>
+  <td>sequential</td>
+  <td>sequential</td>
+  <td class="highlight">parallel</td>
+  <td>parallel</td>
+  <td>parallel</td>
+  <td>sequential</td>
+  <td>sequential</td>
+  <td class="highlight">async + pool</td>
+</tr>
+<tr>
+  <td>Task deps</td>
+  <td>none</td>
+  <td>single</td>
+  <td class="highlight">multi</td>
+  <td>multi</td>
+  <td>multi</td>
+  <td>multi</td>
+  <td>fn graph</td>
+  <td>none</td>
+  <td>objective tree</td>
+</tr>
+<tr>
+  <td>Termination</td>
+  <td>never</td>
+  <td>all complete</td>
+  <td>all complete</td>
+  <td>all complete</td>
+  <td>all complete</td>
+  <td>all complete</td>
+  <td>manual</td>
+  <td>tool signal</td>
+  <td>end_turn</td>
+</tr>
+<tr>
+  <td>Memory</td>
+  <td>Pinecone</td>
+  <td>session str</td>
+  <td>dep chain</td>
+  <td>dep chain</td>
+  <td>embeddings</td>
+  <td>ndjson + summary</td>
+  <td>exec logs</td>
+  <td>messages[]</td>
+  <td class="highlight">SQLite + KG</td>
+</tr>
+<tr>
+  <td>Tools</td>
+  <td>0</td>
+  <td>3</td>
+  <td>3</td>
+  <td>4</td>
+  <td>7</td>
+  <td>15+</td>
+  <td>fn packs</td>
+  <td class="highlight">self-creating</td>
+  <td class="highlight">self-creating + persist</td>
+</tr>
+<tr>
+  <td>Extensibility</td>
+  <td>edit source</td>
+  <td>edit source</td>
+  <td>edit source</td>
+  <td>edit source</td>
+  <td class="highlight">skill plugins</td>
+  <td>skill plugins</td>
+  <td class="highlight">fn registry</td>
+  <td>runtime exec()</td>
+  <td>register + DB</td>
+</tr>
+<tr>
+  <td>I/O</td>
+  <td>CLI print</td>
+  <td>CLI print</td>
+  <td>CLI print</td>
+  <td>CLI + file</td>
+  <td>CLI + file</td>
+  <td class="highlight">Flask web UI</td>
+  <td>Flask dashboard</td>
+  <td>CLI</td>
+  <td class="highlight">multi-channel</td>
+</tr>
+<tr>
+  <td>Concurrency</td>
+  <td>—</td>
+  <td>—</td>
+  <td>—</td>
+  <td>threads</td>
+  <td>threads</td>
+  <td>threads</td>
+  <td>—</td>
+  <td>—</td>
+  <td class="highlight">async + semaphore</td>
+</tr>
+<tr>
+  <td>Error handling</td>
+  <td>—</td>
+  <td>try/except</td>
+  <td>try/except</td>
+  <td>try/except</td>
+  <td>try/except</td>
+  <td>try/except</td>
+  <td>logged</td>
+  <td>try/except</td>
+  <td class="highlight">retry + backoff + repair</td>
+</tr>
+<tr>
+  <td>Key insight</td>
+  <td>LLMs can chain tasks</td>
+  <td>tasks need structure</td>
+  <td>plan upfront</td>
+  <td>parallelize DAG</td>
+  <td>plugin architecture</td>
+  <td>chat + reflection</td>
+  <td>functions as atoms</td>
+  <td>LLM is the planner</td>
+  <td>production agent</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p class="dim">Each column links to the detailed analysis below. Highlighted cells mark the first appearance of a significant capability.</p>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="original">
+<div class="version-header">
+  <div class="version-name">BabyAGI</div>
+  <div class="version-date">April 4, 2023</div>
+</div>
+<div class="version-loc">138 lines · single file · Python</div>
+
+<p>The original BabyAGI is a deceptively simple infinite loop: execute a task, store the result, create new tasks, reprioritize, repeat. The entire system is three LLM calls chained inside a <code>while True</code>.</p>
+
+<div class="label">Architecture</div>
+<div class="arch">
+┌─────────────────────────────────────────────────────┐
+│                   while True:                       │
+│                                                     │
+│   task_list (deque) ──► execution_agent()            │
+│         ▲                      │                    │
+│         │                      ▼                    │
+│   prioritization_agent()   result ──► Pinecone      │
+│         ▲                      │      (embeddings)  │
+│         │                      ▼                    │
+│         └──── task_creation_agent()                  │
+└─────────────────────────────────────────────────────┘</div>
+
+<div class="label">Core Loop</div>
+<pre><code><span class="diff-context"># The three-agent loop — entire system logic</span>
+result = execution_agent(OBJECTIVE, task["task_name"])
+
+<span class="diff-context"># Store in Pinecone with ada-002 embeddings</span>
+index.upsert([(result_id, get_ada_embedding(vector),
+  {"task": task['task_name'], "result": result})])
+
+<span class="diff-context"># Generate new tasks from result</span>
+new_tasks = task_creation_agent(OBJECTIVE, enriched_result,
+  task["task_name"], [t["task_name"] for t in task_list])
+
+<span class="diff-context"># Reprioritize everything</span>
+prioritization_agent(this_task_id)</code></pre>
+
+<div class="label">Key Decisions</div>
+<p>Uses <code>text-davinci-003</code> (completion API, not chat). Pinecone for vector memory via <code>text-embedding-ada-002</code>. Task list is a Python <code>deque</code>. The <code>context_agent</code> retrieves the top-5 nearest results from Pinecone by cosine similarity but its output is never actually passed to the execution prompt — a telling sign this was a proof of concept.</p>
+
+<div class="insight">The loop never terminates. There is no completion condition. This was the point: demonstrate that an LLM could autonomously generate and execute an unbounded task chain. Everything that followed was about adding structure to this unbounded loop.</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">3</div><div class="stat-label">LLM agents</div></div>
+  <div class="stat"><div class="stat-value">0</div><div class="stat-label">tools</div></div>
+  <div class="stat"><div class="stat-value">∞</div><div class="stat-label">loop</div></div>
+  <div class="stat"><div class="stat-value">davinci-003</div><div class="stat-label">model</div></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="bee">
+<div class="version-header">
+  <div class="version-name">BabyBeeAGI</div>
+  <div class="version-date">April 30, 2023</div>
+</div>
+<div class="version-loc">300 lines · single file · Python</div>
+
+<p>BabyBeeAGI introduces two foundational concepts: <strong>task dependencies</strong> and <strong>tools</strong>. Tasks are no longer a flat queue — each task carries a <code>dependent_task_id</code>, a <code>tool</code> specifier, and a <code>status</code>. Pinecone is dropped entirely; context is managed through a <code>session_summary</code>.</p>
+
+<div class="label">Architecture</div>
+<div class="arch">
+task_list = [
+  { id, task, tool, dependent_task_id,
+    status, result, result_summary }
+]
+
+Tools: text-completion | web-search | web-scrape
+
+New agents:
+  task_manager_agent()   ← replaces creation + prioritization
+  summarizer_agent()     ← per-task result compression
+  overview_agent()       ← rolling session summary</div>
+
+<div class="label">What Changed</div>
+<p>The single <code>task_creation_agent</code> becomes a <code>task_manager_agent</code> that both creates and reprioritizes tasks — and it uses GPT-4 (chat API, not completion). Tasks now have explicit tool routing:</p>
+
+<pre><code>if task["tool"] == "text-completion":
+    result = text_completion_tool(task_prompt)
+elif task["tool"] == "web-search":
+    result = web_search_tool(task_prompt)
+elif task["tool"] == "web-scrape":
+    result = web_scrape_tool(str(task['task']))</code></pre>
+
+<p>The task manager receives the entire task list (minus results, to fit context) and outputs a new JSON task list. Tasks are capped at 7 items. The loop now terminates when all tasks have <code>status: "complete"</code>.</p>
+
+<div class="insight">The shift from "infinite loop with reprioritization" to "finite task graph with dependencies" is the first major architectural lesson. BabyBeeAGI answers the question: how do you make an autonomous agent stop?</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">4</div><div class="stat-label">LLM agents</div></div>
+  <div class="stat"><div class="stat-value">3</div><div class="stat-label">tools</div></div>
+  <div class="stat"><div class="stat-value">7</div><div class="stat-label">max tasks</div></div>
+  <div class="stat"><div class="stat-value">GPT-4</div><div class="stat-label">model</div></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="cat">
+<div class="version-header">
+  <div class="version-name">BabyCatAGI</div>
+  <div class="version-date">May 13, 2023</div>
+</div>
+<div class="version-loc">320 lines · single file · Python</div>
+
+<p>BabyCatAGI refactors BabyBeeAGI in two important ways. First, task creation is extracted into its own dedicated <code>task_creation_agent</code> that runs once at startup to produce the entire task plan upfront. Second, <code>dependent_task_id</code> becomes <code>dependent_task_ids</code> (plural) — tasks can now depend on multiple predecessors.</p>
+
+<div class="label">Key Structural Change</div>
+<pre><code><span class="diff-context"># BabyBeeAGI: single dependency</span>
+"dependent_task_id": 2
+
+<span class="diff-add"># BabyCatAGI: multiple dependencies</span>
+<span class="diff-add">"dependent_task_ids": [1, 3, 4]</span></code></pre>
+
+<p>The web search tool now automatically scrapes and extracts from each result URL. The extraction uses chunked processing with overlap — a primitive RAG pattern:</p>
+
+<pre><code>chunk_size = 3000
+overlap = 500
+for i in range(0, len(large_string), chunk_size - overlap):
+    chunk = large_string[i:i + chunk_size]
+    # LLM extracts relevant info, appends to notes</code></pre>
+
+<p>The session summary agent is removed. Context flows through task outputs via dependency chains. The task manager agent is also removed — the plan is fixed at creation time.</p>
+
+<div class="insight">The move from dynamic replanning to a fixed upfront plan is a deliberate simplification. The dynamic task manager in BabyBeeAGI was unstable — it could produce malformed JSON, reorder completed tasks, or create loops. BabyCatAGI trades flexibility for reliability.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="deer">
+<div class="version-header">
+  <div class="version-name">BabyDeerAGI</div>
+  <div class="version-date">June 6, 2023</div>
+</div>
+<div class="version-loc">354 lines · single file · Python</div>
+
+<p>BabyDeerAGI's contribution is <strong>parallel execution</strong>. Tasks that have no mutual dependencies can now run concurrently using <code>ThreadPoolExecutor</code>.</p>
+
+<div class="label">Parallel Execution</div>
+<pre><code>from concurrent.futures import ThreadPoolExecutor
+
+with ThreadPoolExecutor() as executor:
+    while True:
+        for task in task_list:
+            if task["status"] == "incomplete" \
+               and task_ready_to_run(task, task_list):
+                future = executor.submit(
+                    execute_task, task, task_list, OBJECTIVE)
+                task["status"] = "running"</code></pre>
+
+<p>New additions: a <code>user-input</code> tool for interactive queries (human-in-the-loop), task creation downgraded from GPT-4 to GPT-3.5-turbo (cost optimization), and a smarter web search that uses dependent task outputs to refine search queries:</p>
+
+<pre><code>query = text_completion_tool(
+    "Generate a Google search query based on the following task: "
+    + query + ". " + dependent_task + "\nSearch Query:")</code></pre>
+
+<p>Results are saved to timestamped files. The session summary is replaced by a concatenated output log.</p>
+
+<div class="insight">Parallel execution is the natural next step once you have a dependency DAG. If tasks A and B both depend only on task 0, they can run simultaneously. This pattern — DAG-based parallel execution — becomes the standard for all subsequent versions.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="elf">
+<div class="version-header">
+  <div class="version-name">BabyElfAGI</div>
+  <div class="version-date">July 10, 2023</div>
+</div>
+<div class="version-loc">887 lines · 11 files · Python</div>
+
+<p>BabyElfAGI is the first multi-file architecture. The monolithic script splits into a <code>SkillRegistry</code>, a <code>TaskRegistry</code>, and individual skill modules. This is the birth of the <strong>plugin system</strong>.</p>
+
+<div class="label">Architecture</div>
+<div class="arch">
+BabyElfAGI/
+├── main.py                   ← orchestrator
+├── skills/
+│   ├── skill.py              ← abstract base class
+│   ├── skill_registry.py     ← dynamic loader
+│   ├── text_completion.py    ← skill implementation
+│   ├── web_search.py
+│   ├── code_reader.py
+│   ├── skill_saver.py        ← meta: saves new skills
+│   └── objective_saver.py
+└── tasks/
+    ├── task_registry.py      ← task + example matching
+    └── example_objectives/   ← few-shot examples as JSON</div>
+
+<div class="label">Skill Base Class</div>
+<pre><code>class Skill:
+    name = 'base skill'
+    description = 'This is the base skill.'
+    api_keys_required = []
+
+    def __init__(self, api_keys):
+        missing_keys = self.check_required_keys(api_keys)
+        self.valid = not missing_keys
+
+    def execute(self, params, dependent_task_outputs, objective):
+        raise NotImplementedError</code></pre>
+
+<p>Skills are discovered at runtime via filesystem scan and <code>importlib</code>. The registry filters by available API keys — skills with missing keys are silently skipped.</p>
+
+<p>Task creation now uses <strong>few-shot example matching</strong>: example objective/tasklist pairs are stored as JSON files, and the most relevant example is selected using cosine similarity on ada-002 embeddings. An experimental <strong>reflection step</strong> can modify the task list after each execution.</p>
+
+<div class="insight">The Skill base class with <code>api_keys_required</code> validation and dynamic discovery via <code>importlib</code> is a pattern that persists through every subsequent version. This is where BabyAGI becomes extensible rather than just editable.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="fox">
+<div class="version-header">
+  <div class="version-name">BabyFoxAGI</div>
+  <div class="version-date">September 1, 2023</div>
+</div>
+<div class="version-loc">~2,300 lines · 25+ files · Python + Flask</div>
+
+<p>BabyFoxAGI adds a <strong>web UI and chat interface</strong>, powered by Flask. The agent is no longer a batch script — it's an interactive application. A user sends a message, and the system routes it to one of three paths: direct chat response, single skill execution, or full task list generation.</p>
+
+<div class="label">Routing via Function Calling</div>
+<pre><code><span class="diff-context"># GPT determines the path using OpenAI function calling</span>
+functions=[{
+    "name": "determine_response_type",
+    "parameters": {
+        "properties": {
+            "path": {
+                "enum": ["ChatCompletion", "Skill", "TaskList"]
+            },
+            "skill_used": { ... },
+            "objective": { ... },
+            "message_to_user": { ... }
+        }
+    }
+}]</code></pre>
+
+<p>Backgrounds tasks execute in threads. A <code>forever_cache.ndjson</code> file stores the full conversation history. A rolling summary is maintained by combining the latest 20 messages with a running overall summary — a two-tier memory system. Skills expand significantly: <code>image_generation</code>, <code>play_music</code>, <code>game_generation</code>, <code>startup_analysis</code>, <code>airtable_search</code>, <code>google_jobs_api_search</code>, and <code>drawing</code>.</p>
+
+<p>The task registry adds <strong>objective reflection</strong>: before creating a task list, the system reflects on the objective to generate "helpful notes" that guide the task creation agent. After execution, it reflects on both the result (self-analysis) and the task list (generating improved versions saved as new example objectives).</p>
+
+<div class="label">Self-Improvement Loop</div>
+<div class="arch">
+objective ──► reflect_on_objective() ──► create_tasklist()
+                                              │
+                                              ▼
+                                         execute tasks
+                                              │
+                                              ▼
+              reflect_on_final() ◄────── task outputs
+                    │
+                    ├──► improved_tasklist.json  (saved)
+                    └──► skill gap analysis      (logged)</div>
+
+<div class="insight">BabyFoxAGI introduces three patterns that define modern agent design: routing between response types (chat vs. action), persistent conversation memory, and self-improvement via reflection. The <code>reflect_skills()</code> method analyzes whether the available skills were sufficient — a proto-form of the self-extending agent that arrives in v2o and v3.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="timeline-gap">── 13 months ──</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="v2">
+<div class="version-header">
+  <div class="version-name">BabyAGI 2</div>
+  <div class="version-date">September 30, 2024</div>
+</div>
+<div class="version-loc">~5,960 lines · 40+ files · Python package</div>
+
+<p>BabyAGI 2 is a complete rewrite. The concept shifts from "task list execution" to <strong>functions as first-class entities</strong>. The core abstraction is <code>Functionz</code> — a framework where every capability is a registered function with versioning, dependency resolution, logging, triggers, and a database backend.</p>
+
+<div class="label">Architecture</div>
+<div class="arch">
+Functionz Framework
+├── core/
+│   ├── framework.py      ← Functionz class (entry point)
+│   ├── registration.py   ← decorator + AST parameter parsing
+│   └── execution.py      ← dependency resolution + exec()
+├── db/
+│   ├── base_db.py        ← abstract storage interface
+│   ├── local_db.py       ← JSON file storage
+│   ├── db_router.py      ← storage backend selector
+│   └── models.py         ← data models
+├── packs/
+│   ├── default/          ← core functions (AI, OS, chat)
+│   ├── drafts/           ← experimental (self_build, react_agent)
+│   └── plugins/          ← integrations (airtable, firecrawl, payman...)
+├── dashboard/            ← Flask web UI with function graph viz
+└── api/                  ← REST API</div>
+
+<div class="label">Function Registration</div>
+<pre><code>@func.register_function(
+    metadata={"description": "Search the web using SerpAPI"},
+    imports=["serpapi"],
+    key_dependencies=["SERPAPI_API_KEY"],
+    triggers=["log_search_result"]
+)
+def search_web(query: str) -> dict:
+    ...
+
+<span class="diff-context"># Functions are stored in DB with full metadata:</span>
+<span class="diff-context"># - versioned code (rollback support)</span>
+<span class="diff-context"># - parsed input/output parameters via AST</span>
+<span class="diff-context"># - dependency graph (auto-resolution at exec time)</span>
+<span class="diff-context"># - triggers (functions that fire after execution)</span>
+<span class="diff-context"># - execution logs with timing</span></code></pre>
+
+<div class="label">Execution Engine</div>
+<p>The executor resolves the full dependency graph at runtime: it loads function code from the database, <code>exec()</code>s it into a local scope, resolves imports (auto-installing missing packages via pip), injects secret keys, and wraps dependent functions so they're logged when called. Every execution is logged with parameters, output, timing, parent log ID, and trigger chain.</p>
+
+<p>The <code>self_build</code> draft shows the ultimate goal: an LLM that can write, register, and execute its own functions. The <code>react_agent</code> draft implements a ReAct loop on top of Functionz.</p>
+
+<div class="insight">BabyAGI 2 is not an agent — it's a <em>function runtime</em>. The insight is that agents are just functions that call other functions. By making functions first-class (with versioning, logging, triggers, and dependency resolution), you get agent behavior as an emergent property rather than a hardcoded loop.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="v2o">
+<div class="version-header">
+  <div class="version-name">BabyAGI 2o</div>
+  <div class="version-date">October 17, 2024</div>
+</div>
+<div class="version-loc">174 lines · single file · Python</div>
+
+<p>BabyAGI 2o is a radical compression. The entire agent fits in 174 lines. It uses LiteLLM for model-agnostic inference and the native <strong>tool calling</strong> API. The agent starts with exactly three tools: <code>create_or_update_tool</code>, <code>install_package</code>, and <code>task_completed</code>.</p>
+
+<div class="label">The Bootstrapping Loop</div>
+<pre><code><span class="diff-context"># The agent builds its own tools. This is the entire system:</span>
+
+tools = []  <span class="diff-context"># starts empty (plus 3 built-ins)</span>
+
+def create_or_update_tool(name, code, description, parameters):
+    exec(code, globals())
+    register_tool(name, globals()[name], description, parameters)
+
+<span class="diff-context"># Main loop: LLM calls tools, tools create more tools</span>
+while iteration < max_iterations:
+    response = completion(model=MODEL_NAME, messages=messages,
+                          tools=tools, tool_choice="auto")
+    for tool_call in response_message.tool_calls:
+        result = call_tool(function_name, args)
+    if 'task_completed' in tool_calls:
+        break</code></pre>
+
+<p>The system prompt tells the LLM to be self-sufficient: if information is needed, create a tool to find it. If a package is needed, install it. Auto-detect available API keys from environment variables. The LLM orchestrates everything through tool use — no explicit task list, no planner, no skill registry. Just a conversation with tool calls.</p>
+
+<div class="insight">BabyAGI 2o proves that with modern tool-calling APIs, the minimal viable agent is remarkably small. The planning, execution, and tool creation from the classic versions all collapse into a single LLM conversation loop with <code>tool_choice="auto"</code>. The LLM <em>is</em> the planner.</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">174</div><div class="stat-label">total lines</div></div>
+  <div class="stat"><div class="stat-value">3</div><div class="stat-label">built-in tools</div></div>
+  <div class="stat"><div class="stat-value">50</div><div class="stat-label">max iterations</div></div>
+  <div class="stat"><div class="stat-value">any</div><div class="stat-label">model (litellm)</div></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="timeline-gap">── 16 months ──</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="v3">
+<div class="version-header">
+  <div class="version-name">BabyAGI 3</div>
+  <div class="version-date">February 7, 2026</div>
+</div>
+<div class="version-loc">~33,500 lines · 70+ files · Python (async)</div>
+
+<p>BabyAGI 3 is a production-grade autonomous agent. The core insight from the codebase docstring: <em>"Everything is still a message."</em> User input, tool execution, background objectives, scheduled tasks — all messages in conversation threads. The architecture extends the BabyAGI 2o pattern (LLM + tool loop) but adds every production concern: memory, multi-channel I/O, scheduling, budget tracking, context management, self-improvement, and error recovery.</p>
+
+<div class="label">Architecture</div>
+<div class="arch">
+┌──────────────────────────────────────────────────────────────┐
+│                         Agent                                 │
+│                                                               │
+│  Listeners (input)          Core Loop          Senders (out)  │
+│  ┌─────────────┐    ┌──────────────────┐    ┌─────────────┐  │
+│  │ CLI         │    │                  │    │ CLI         │  │
+│  │ Email       │───►│  run_async()     │───►│ Email       │  │
+│  │ SMS/iMsg    │    │  ┌────────────┐  │    │ SMS/iMsg    │  │
+│  │ Voice       │    │  │ LLM Call   │  │    └─────────────┘  │
+│  └─────────────┘    │  │  ▼         │  │                     │
+│                     │  │ Tool Exec  │  │    ┌─────────────┐  │
+│  ┌─────────────┐    │  │  ▼         │  │    │ Memory      │  │
+│  │ Scheduler   │───►│  │ Loop until │  │───►│ (SQLite)    │  │
+│  │ (cron/at/   │    │  │ end_turn   │  │    │ embeddings  │  │
+│  │  interval)  │    │  └────────────┘  │    │ kg extract  │  │
+│  └─────────────┘    └──────────────────┘    └─────────────┘  │
+│                                                               │
+│  ┌─────────────┐    ┌──────────────────┐    ┌─────────────┐  │
+│  │ Objectives  │    │ Context Budget   │    │ Metrics     │  │
+│  │ (bg tasks)  │    │ (trim/summarize) │    │ (cost/$)    │  │
+│  │ priority Q  │    │ overflow recover │    │ per-model   │  │
+│  │ retry+back  │    └──────────────────┘    └─────────────┘  │
+│  │ cancel/budg │                                              │
+│  └─────────────┘    ┌──────────────────┐                     │
+│                     │ Tool Context     │                     │
+│  ┌─────────────┐    │ (smart selection)│                     │
+│  │ Credentials │    │ usage-weighted   │                     │
+│  │ (keyring)   │    └──────────────────┘                     │
+│  └─────────────┘                                              │
+└──────────────────────────────────────────────────────────────┘</div>
+
+<div class="label">Core Loop</div>
+<p>The fundamental pattern is identical to 2o — an LLM message loop with tool calling — but wrapped in production infrastructure:</p>
+
+<pre><code>async def run_async(self, user_input, thread_id="main", context=None):
+    async with self._get_thread_lock(thread_id):
+        thread = self.threads.setdefault(thread_id, [])
+        self.repair_thread(thread_id)  <span class="diff-context"># fix orphaned tool_use</span>
+        thread.append({"role": "user", "content": user_input})
+
+        self._refresh_tool_selection(user_input, context)
+
+        while True:
+            <span class="diff-context"># Trim thread to fit context window</span>
+            thread = self._context_budget.trim_thread(thread, ...)
+
+            <span class="diff-context"># LLM call with 3-stage overflow recovery</span>
+            try:
+                response = await self.client.messages.create(...)
+            except ContextOverflow:
+                <span class="diff-context"># Stage 1: aggressive trim</span>
+                <span class="diff-context"># Stage 2: minimal thread + core tools</span>
+                <span class="diff-context"># Stage 3: clear thread, inform user</span>
+
+            if response.stop_reason == "end_turn":
+                return self._extract_text(response)
+
+            <span class="diff-context"># Execute tools (async in thread pool)</span>
+            for block in response.content:
+                if block.type == "tool_use":
+                    result = await asyncio.to_thread(
+                        self.tools[block.name].execute, ...)
+                    <span class="diff-context"># Large results → LLM summarization</span></code></pre>
+
+<div class="label">Objectives System</div>
+<p>Background objectives run as separate agent loops in their own conversation threads with full concurrency control:</p>
+
+<pre><code>@dataclass
+class Objective:
+    id: str
+    goal: str
+    status: str       <span class="diff-context"># pending → running → completed/failed/cancelled</span>
+    priority: int     <span class="diff-context"># 1-10, lower = higher</span>
+    budget_usd: float <span class="diff-context"># cost cap (None = unlimited)</span>
+    token_limit: int  <span class="diff-context"># token cap</span>
+    retry_count: int  <span class="diff-context"># auto-retry with exponential backoff</span>
+    error_history: list  <span class="diff-context"># fed to retries for adaptive strategy</span></code></pre>
+
+<p>Max 5 concurrent objectives via semaphore. Failed objectives retry with exponential backoff (2s, 4s, 8s). Each retry receives the full error history so the LLM can adapt its approach. Budget/token limits halt execution when exceeded.</p>
+
+<div class="label">Memory</div>
+<p>SQLite-backed persistent memory with event logging, entity extraction, knowledge graph, embeddings search, and context assembly. Memory is assembled into the system prompt dynamically. The <code>ToolContextBuilder</code> selects which tools to include in each API call based on query relevance, usage patterns, and current channel.</p>
+
+<div class="label">Self-Improvement</div>
+<p>Tools created at runtime via <code>register_tool</code> are persisted to the database and reloaded on startup. Three tool types: executable (Python code), skill (behavioral instructions), and composio (third-party wrappers). External packages detected via AST analysis are sandboxed in e2b. Tools track execution statistics for monitoring.</p>
+
+<div class="label">Multi-Channel</div>
+<p>The listener/sender architecture decouples I/O. Each message carries context: <code>channel</code>, <code>is_owner</code>, <code>sender</code>. The system prompt adapts — iMessage gets terse responses with no markdown; emails get structured prose; external contacts get privacy-respecting replies. Owner vs. non-owner access controls are enforced at the prompt level.</p>
+
+<div class="label">Resilience</div>
+<p>Thread repair fixes orphaned <code>tool_use</code> blocks (a common crash mode). 3-stage context overflow recovery. Per-thread locks prevent race conditions between concurrent sources. Large tool results are summarized by a fast model before entering the context. Graceful fallbacks at every layer — broken tools are disabled rather than crashing startup.</p>
+
+<div class="insight">BabyAGI 3 is the synthesis. The 2o insight (LLM is the planner) becomes the core loop. The classic-era skills become persisted tools. The Fox-era reflection becomes structured memory. The v2 function runtime becomes the tool registration system. And the whole thing is wrapped in the production engineering that the earlier versions deliberately omitted: async, concurrency control, budget limits, error recovery, multi-channel I/O, and context window management.</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">~33.5k</div><div class="stat-label">lines</div></div>
+  <div class="stat"><div class="stat-value">async</div><div class="stat-label">runtime</div></div>
+  <div class="stat"><div class="stat-value">5</div><div class="stat-label">max concurrent</div></div>
+  <div class="stat"><div class="stat-value">SQLite</div><div class="stat-label">memory</div></div>
+</div>
+</section>
+
+<!-- ═══════════════════════ GRAPH PROJECTS ASIDE ═══════════════════════ -->
+<section class="aside-section" id="graph-projects">
+<div class="container">
+<div class="version-header">
+  <div class="version-name">Sidebar: The Graph Thread</div>
+  <div class="version-date">2023–2025</div>
+</div>
+
+<p>Running parallel to BabyAGI, three standalone projects explored a related question: can LLMs build and maintain structured knowledge graphs? Each fed ideas back into the agent line — and the progression from Instagraph to Graphista traces the same arc from "simple LLM hack" to "production memory system" that BabyAGI followed for agents.</p>
+
+<div class="aside-grid">
+
+<div class="aside-card">
+  <div class="aside-card-title">Instagraph</div>
+  <div class="aside-card-date">September 12, 2023</div>
+  <p>Text in, knowledge graph out. A single API call to GPT-4 with a prompt asking it to identify entities and relationships, rendered with Cytoscape.js. No persistence, no schema, no deduplication — just <code>postData("/get_response_data", payload)</code> and a <code>cose</code> layout.</p>
+  <p class="dim">The proof of concept: LLMs can extract structured graphs from unstructured text without custom NLP pipelines.</p>
+</div>
+
+<div class="aside-card">
+  <div class="aside-card-title">MindGraph</div>
+  <div class="aside-card-date">March 16, 2024</div>
+  <p>A Flask app with a plugin integration system, schema-driven entity types, CRUD operations, and search. Uses OpenAI's function calling API with a <code>knowledge_graph</code> function definition to get structured extraction — entities, relationships, and source snippets — rather than hoping the LLM returns valid JSON.</p>
+  <p class="dim">The structured output insight: define the graph schema as a function signature and let the API enforce it. Also introduces the integration manager pattern that reappears in BabyAGI 3's tool registration.</p>
+</div>
+
+<div class="aside-card">
+  <div class="aside-card-title">Graphista</div>
+  <div class="aside-card-date">February 15, 2025</div>
+  <p>Full graph-based memory system. Two LLM loops: <code>ingest()</code> processes text through a SmartNodeProcessor (entity extraction, deduplication, graph updates via chain-of-thought) and <code>ask()</code> answers questions via SmartRetrievalTool with multi-step reasoning. Supports multiple backends (local JSON, Neo4j, FalkorDB), ontology-driven schemas, embeddings, and batch operations.</p>
+  <p class="dim">The memory architecture that BabyAGI 3 absorbed: persistent graph storage, LLM-powered entity extraction, and embedding-based retrieval — all wrapped in a clean <code>Memory</code> class with <code>ingest()</code> and <code>ask()</code>.</p>
+</div>
+
+</div>
+
+<p class="dim">The thread connecting these projects is the shift from "ask the LLM once" (Instagraph) to "let the LLM manage a persistent graph through structured tool calls" (MindGraph → Graphista). BabyAGI 3's SQLite-backed memory with entity extraction and knowledge graph queries is the direct descendant of this line of work — the graph became the agent's memory layer.</p>
+
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="version" id="evolution">
+<div class="version-header">
+  <div class="version-name">Evolution</div>
+  <div class="version-date">2023–2026</div>
+</div>
+
+<div class="label">Lines of Code</div>
+<div class="arch">
+BabyAGI     ████                                           138
+BabyBeeAGI  █████████                                      300
+BabyCatAGI  ██████████                                     320
+BabyDeerAGI ███████████                                    354
+BabyElfAGI  ███████████████████████████                    887
+BabyFoxAGI  ██████████████████████████████████████████    2,299
+BabyAGI 2o  █████                                          174
+BabyAGI 2   ████████████████████████████████████████████  5,962
+BabyAGI 3   █████████████████████████████████████████████33,506</div>
+
+<div class="label">Capability Heatmap</div>
+<p class="dim">Each cell shows when a capability appeared and how sophisticated it became. Darker = more advanced implementation.</p>
+
+<div class="heatmap-wrap">
+<div class="heatmap">
+  <div class="heatmap-header"></div>
+  <div class="heatmap-header">v1</div>
+  <div class="heatmap-header">Bee</div>
+  <div class="heatmap-header">Cat</div>
+  <div class="heatmap-header">Deer</div>
+  <div class="heatmap-header">Elf</div>
+  <div class="heatmap-header">Fox</div>
+  <div class="heatmap-header">v2</div>
+  <div class="heatmap-header">2o</div>
+  <div class="heatmap-header">v3</div>
+
+  <div class="heatmap-row-label">Planning</div>
+  <div class="heatmap-cell l2">loop</div>
+  <div class="heatmap-cell l3">dynamic</div>
+  <div class="heatmap-cell l3">upfront</div>
+  <div class="heatmap-cell l3">upfront</div>
+  <div class="heatmap-cell l4">+reflect</div>
+  <div class="heatmap-cell l4">+reflect</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l5">implicit</div>
+  <div class="heatmap-cell l5">implicit</div>
+
+  <div class="heatmap-row-label">Tools</div>
+  <div class="heatmap-cell l0">0</div>
+  <div class="heatmap-cell l2">3</div>
+  <div class="heatmap-cell l2">3</div>
+  <div class="heatmap-cell l2">4</div>
+  <div class="heatmap-cell l3">7</div>
+  <div class="heatmap-cell l4">15+</div>
+  <div class="heatmap-cell l4">packs</div>
+  <div class="heatmap-cell l5">self</div>
+  <div class="heatmap-cell l6">self+DB</div>
+
+  <div class="heatmap-row-label">Memory</div>
+  <div class="heatmap-cell l2">vec DB</div>
+  <div class="heatmap-cell l1">string</div>
+  <div class="heatmap-cell l2">deps</div>
+  <div class="heatmap-cell l2">deps</div>
+  <div class="heatmap-cell l3">embed</div>
+  <div class="heatmap-cell l4">cache</div>
+  <div class="heatmap-cell l3">logs</div>
+  <div class="heatmap-cell l1">msgs</div>
+  <div class="heatmap-cell l6">SQLite+KG</div>
+
+  <div class="heatmap-row-label">Concurrency</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l3">threads</div>
+  <div class="heatmap-cell l3">threads</div>
+  <div class="heatmap-cell l3">threads</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l6">async</div>
+
+  <div class="heatmap-row-label">Error recovery</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l1">basic</div>
+  <div class="heatmap-cell l1">basic</div>
+  <div class="heatmap-cell l1">basic</div>
+  <div class="heatmap-cell l1">basic</div>
+  <div class="heatmap-cell l1">basic</div>
+  <div class="heatmap-cell l2">logged</div>
+  <div class="heatmap-cell l1">basic</div>
+  <div class="heatmap-cell l6">retry+repair</div>
+
+  <div class="heatmap-row-label">I/O channels</div>
+  <div class="heatmap-cell l1">CLI</div>
+  <div class="heatmap-cell l1">CLI</div>
+  <div class="heatmap-cell l1">CLI</div>
+  <div class="heatmap-cell l2">CLI+file</div>
+  <div class="heatmap-cell l2">CLI+file</div>
+  <div class="heatmap-cell l4">web UI</div>
+  <div class="heatmap-cell l3">dash</div>
+  <div class="heatmap-cell l1">CLI</div>
+  <div class="heatmap-cell l6">multi</div>
+
+  <div class="heatmap-row-label">Self-improve</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l0">—</div>
+  <div class="heatmap-cell l2">detect</div>
+  <div class="heatmap-cell l3">reflect</div>
+  <div class="heatmap-cell l4">version</div>
+  <div class="heatmap-cell l5">exec()</div>
+  <div class="heatmap-cell l6">persist</div>
+
+  <div class="heatmap-row-label">Model lock-in</div>
+  <div class="heatmap-cell l5">hard</div>
+  <div class="heatmap-cell l5">hard</div>
+  <div class="heatmap-cell l4">mixed</div>
+  <div class="heatmap-cell l4">mixed</div>
+  <div class="heatmap-cell l4">mixed</div>
+  <div class="heatmap-cell l4">mixed</div>
+  <div class="heatmap-cell l1">any</div>
+  <div class="heatmap-cell l1">any</div>
+  <div class="heatmap-cell l1">any</div>
+</div>
+</div>
+
+<div class="label">Where the Code Goes (BabyAGI 3)</div>
+<p class="dim">Approximate breakdown of ~33.5k lines by function. The production concerns dwarf the actual agent logic — the core loop that decides what to do next is under 200 lines.</p>
+
+<div class="anatomy-chart">
+  <div class="anatomy-row">
+    <div class="anatomy-label">Core loop</div>
+    <div class="anatomy-bar-wrap">
+      <div class="anatomy-segment seg-core" style="width: 1.5%;" title="Core agent loop: ~500 lines"></div>
+    </div>
+    <div class="anatomy-total">~500</div>
+  </div>
+  <div class="anatomy-row">
+    <div class="anatomy-label">Tools</div>
+    <div class="anatomy-bar-wrap">
+      <div class="anatomy-segment seg-tools" style="width: 30%;" title="Tool definitions and registration: ~10,000 lines"></div>
+    </div>
+    <div class="anatomy-total">~10,000</div>
+  </div>
+  <div class="anatomy-row">
+    <div class="anatomy-label">Memory</div>
+    <div class="anatomy-bar-wrap">
+      <div class="anatomy-segment seg-memory" style="width: 15%;" title="SQLite, embeddings, knowledge graph: ~5,000 lines"></div>
+    </div>
+    <div class="anatomy-total">~5,000</div>
+  </div>
+  <div class="anatomy-row">
+    <div class="anatomy-label">I/O + channels</div>
+    <div class="anatomy-bar-wrap">
+      <div class="anatomy-segment seg-io" style="width: 20%;" title="Listeners, senders, formatting: ~6,500 lines"></div>
+    </div>
+    <div class="anatomy-total">~6,500</div>
+  </div>
+  <div class="anatomy-row">
+    <div class="anatomy-label">Infrastructure</div>
+    <div class="anatomy-bar-wrap">
+      <div class="anatomy-segment seg-infra" style="width: 34%;" title="Context mgmt, scheduling, credentials, metrics, error handling: ~11,500 lines"></div>
+    </div>
+    <div class="anatomy-total">~11,500</div>
+  </div>
+  <div class="anatomy-legend">
+    <div class="anatomy-legend-item"><div class="anatomy-legend-swatch seg-core"></div>Core loop</div>
+    <div class="anatomy-legend-item"><div class="anatomy-legend-swatch seg-tools"></div>Tools + registry</div>
+    <div class="anatomy-legend-item"><div class="anatomy-legend-swatch seg-memory"></div>Memory</div>
+    <div class="anatomy-legend-item"><div class="anatomy-legend-swatch seg-io"></div>I/O channels</div>
+    <div class="anatomy-legend-item"><div class="anatomy-legend-swatch seg-infra"></div>Infrastructure</div>
+  </div>
+</div>
+
+<div class="label">Architectural Transitions</div>
+
+<p><strong>Task management.</strong> Infinite loop (v1) → finite task list with dependencies (Bee) → upfront planning (Cat) → parallel DAG execution (Deer) → skill-based planning with reflection (Elf/Fox) → LLM-native tool loop (2o/3). The explicit planner disappears; the LLM's own reasoning replaces it.</p>
+
+<p><strong>Extensibility.</strong> Hardcoded tools (Bee/Cat/Deer) → skill base class with dynamic discovery (Elf) → skill registry with reflection (Fox) → function runtime with versioning (v2) → self-extending via <code>register_tool</code> with persistence (2o/3).</p>
+
+<p><strong>Memory.</strong> Pinecone embeddings (v1) → session summary string (Bee) → dependency-chain context passing (Cat/Deer) → few-shot example matching via embeddings (Elf) → forever cache + rolling summary (Fox) → function execution logs (v2) → SQLite with entity extraction, knowledge graph, and context assembly (v3).</p>
+
+<p><strong>Execution model.</strong> Sequential (v1–Cat) → threaded parallel (Deer–Fox) → synchronous function calls (v2) → fully async with concurrency semaphores, per-thread locks, and thread pool offloading (v3).</p>
+
+<p><strong>I/O.</strong> CLI only (v1–Elf) → Flask web chat (Fox) → CLI with dashboard (v2) → multi-channel with listeners/senders, per-channel formatting, and owner/external access control (v3).</p>
+
+<div class="label">Lessons</div>
+
+<p class="dim">The codebase progression reveals several non-obvious lessons for agent builders:</p>
+
+<p>Explicit planners are fragile. Every version that used an LLM to generate and manage a task list struggled with JSON parsing errors, task ID conflicts, and dependency loops. The most robust versions (2o, 3) let the LLM plan implicitly through sequential tool calls.</p>
+
+<p>Self-improvement needs persistence. BabyFoxAGI's <code>reflect_skills()</code> identified missing skills but couldn't act on it. BabyAGI 2's function versioning stored improvements but lacked the runtime to use them dynamically. BabyAGI 3 closes the loop: create tool → persist to DB → reload on startup.</p>
+
+<p>Context window management is a production concern that dwarfs architectural elegance. BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic.</p>
+
+<p>The minimal viable agent is shockingly small (174 lines). Everything beyond that is error handling, persistence, concurrency, and I/O — the same concerns that dominate any production system.</p>
+
+</section>
+
+<!-- ═══════════════════════════ TIMELINE ═══════════════════════════ -->
+<section class="version" id="timeline">
+<div class="version-header">
+  <div class="version-name">Timeline</div>
+  <div class="version-date">BabyAGI in context</div>
+</div>
+
+<p>BabyAGI didn't evolve in isolation. The timeline below maps each version against the industry milestones that shaped it — organized by the concepts that matter to agent builders rather than by calendar.</p>
+
+</div><!-- close container for full-width timeline -->
+
+<div class="comparison-wrap">
+<table class="comparison-table" style="min-width: 1100px;">
+<thead>
+<tr>
+  <th></th>
+  <th>Mar '23</th>
+  <th>Apr '23</th>
+  <th>May '23</th>
+  <th>Jun '23</th>
+  <th>Jul '23</th>
+  <th>Sep '23</th>
+  <th>Nov '23</th>
+  <th>Jan '24</th>
+  <th>May '24</th>
+  <th>Jun '24</th>
+  <th>Aug '24</th>
+  <th>Sep '24</th>
+  <th>Oct '24</th>
+  <th>Nov '24</th>
+  <th>Jan '25</th>
+  <th>Mar '25</th>
+  <th>Feb '26</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>BabyAGI</td>
+  <td></td>
+  <td class="highlight">v1 · Bee</td>
+  <td class="highlight">Cat</td>
+  <td class="highlight">Deer</td>
+  <td class="highlight">Elf</td>
+  <td class="highlight">Fox</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="highlight">v2</td>
+  <td class="highlight">2o</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="highlight">v3</td>
+</tr>
+<tr style="border-bottom: 1px solid var(--border);">
+  <td>Models</td>
+  <td class="highlight">GPT-4</td>
+  <td></td>
+  <td></td>
+  <td>GPT-3.5 16k</td>
+  <td></td>
+  <td></td>
+  <td>GPT-4 Turbo</td>
+  <td></td>
+  <td>GPT-4o</td>
+  <td>Claude 3.5 Sonnet</td>
+  <td></td>
+  <td>o1</td>
+  <td></td>
+  <td></td>
+  <td>DeepSeek R1</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Tool calling</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="highlight">fn calling API</td>
+  <td></td>
+  <td></td>
+  <td>Assistants API</td>
+  <td></td>
+  <td>Claude tool use</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="highlight">MCP</td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Structured output</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>JSON mode</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="highlight">Structured Outputs</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Agent frameworks</td>
+  <td class="highlight">AutoGPT</td>
+  <td>LangChain agents</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>CrewAI</td>
+  <td>LangGraph</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>AutoGen + Semantic Kernel merge</td>
+  <td></td>
+  <td></td>
+  <td>OpenAI Agents SDK</td>
+  <td></td>
+</tr>
+<tr>
+  <td>BabyAGI insight</td>
+  <td></td>
+  <td style="font-style: italic; color: var(--text-dim);">LLMs can chain tasks</td>
+  <td style="font-style: italic; color: var(--text-dim);">plan upfront</td>
+  <td style="font-style: italic; color: var(--text-dim);">parallelize DAG</td>
+  <td style="font-style: italic; color: var(--text-dim);">plugin arch</td>
+  <td style="font-style: italic; color: var(--text-dim);">chat + reflect</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td style="font-style: italic; color: var(--text-dim);">fns as atoms</td>
+  <td style="font-style: italic; color: var(--text-dim);">LLM is planner</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td style="font-style: italic; color: var(--text-dim);">production agent</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="container">
+
+<div class="label" style="margin-top: 1.5rem;">How the concepts connect</div>
+
+<p>The evolution of tool calling directly shaped BabyAGI's architecture. The classic era (v1–Fox) predated OpenAI's function calling API — every version had to invent its own mechanism for getting an LLM to choose and invoke tools, typically via fragile JSON parsing from chat completions. When function calling launched in June '23, it validated BabyFoxAGI's approach (which had landed days earlier using the same pattern). But it also made the explicit task list unnecessary: if the model can natively call functions, why maintain a separate planner?</p>
+
+<p>That insight took 13 months to crystallize. The gap between Fox (Sep '23) and v2 (Sep '24) spans the arrival of the Assistants API, Claude tool use, GPT-4o, CrewAI, LangGraph, and structured outputs — a complete rewiring of the agent infrastructure stack. When BabyAGI returned, it had absorbed all of it: v2 replaced the task list with a function runtime, and 2o compressed the entire agent to 174 lines by delegating planning to native tool calling.</p>
+
+<p>The second gap (Oct '24 → Feb '26) coincided with MCP and the OpenAI Agents SDK — the industry's shift from "how do agents call tools" to "how do agents interoperate." BabyAGI 3 reflects this: multi-channel I/O, standardized tool registration, and the production infrastructure (context management, budgeting, error recovery) that none of the earlier versions or frameworks addressed.</p>
+
+<p>Structured outputs (Aug '24) are the quiet revolution in this timeline. Before them, every agent framework spent significant code parsing LLM responses into actionable data — BabyAGI's classic era is littered with <code>json.loads()</code> wrapped in try/except. Structured outputs eliminated that entire class of failure, and BabyAGI 2o's radical simplicity (174 lines) is partly possible because it doesn't need response parsing infrastructure.</p>
+
+</section>
+
+</div>
+</main>
+
+<footer>
+<div class="container">
+  Analysis based on source code from github.com/yoheinakajima/babyagi.<br>
+  Generated February 7, 2026.
+</div>
+</footer>
+
+</body>
+</html>
