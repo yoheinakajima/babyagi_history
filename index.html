@@ -516,6 +516,102 @@ footer {
   flex-shrink: 0;
 }
 
+/* ─── Lessons callout cards ─── */
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin: 1.5rem 0 2rem;
+}
+.lesson-card {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1.3rem 1.4rem;
+  background: var(--bg-alt);
+  position: relative;
+}
+.lesson-card::before {
+  content: attr(data-num);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.lesson-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+  line-height: 1.3;
+}
+.lesson-card p {
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ─── Architectural transitions styled list ─── */
+.transitions-list {
+  margin: 1.5rem 0 2rem;
+}
+.transition-item {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.transition-item:first-child { border-top: 1px solid var(--border-light); }
+.transition-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  padding-top: 0.15rem;
+  letter-spacing: 0.03em;
+}
+.transition-stages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+.transition-stages .stage {
+  white-space: nowrap;
+}
+.transition-stages .arrow {
+  color: var(--text-faint);
+  margin: 0 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+}
+
+/* ─── Active nav state ─── */
+nav a.active {
+  color: var(--text);
+  border-bottom: 1.5px solid var(--text);
+  padding-bottom: 1px;
+}
+
+/* ─── ASCII background canvas ─── */
+#ascii-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   header .title { font-size: 2rem; }
@@ -524,10 +620,21 @@ footer {
   .version { padding: 3rem 0; }
   header { padding: 4rem 0 3rem; }
   .version-header { grid-template-columns: 1fr; }
+  .aside-grid { grid-template-columns: 1fr; }
+  .lessons-grid { grid-template-columns: 1fr; }
+  .transition-item { grid-template-columns: 1fr; gap: 0.3rem; }
+  /* Tables: keep in container on mobile */
+  .comparison-wrap {
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+  }
 }
 </style>
 </head>
 <body>
+
+<canvas id="ascii-bg"></canvas>
 
 <header>
 <div class="container">
@@ -1454,27 +1561,115 @@ BabyAGI 3   ██████████████████████�
 
 <div class="label">Architectural Transitions</div>
 
-<p><strong>Task management.</strong> Infinite loop (v1) → finite task list with dependencies (Bee) → upfront planning (Cat) → parallel DAG execution (Deer) → skill-based planning with reflection (Elf/Fox) → LLM-native tool loop (2o/3). The explicit planner disappears; the LLM's own reasoning replaces it.</p>
+<div class="transitions-list">
 
-<p><strong>Extensibility.</strong> Hardcoded tools (Bee/Cat/Deer) → skill base class with dynamic discovery (Elf) → skill registry with reflection (Fox) → function runtime with versioning (v2) → self-extending via <code>register_tool</code> with persistence (2o/3).</p>
+<div class="transition-item">
+  <div class="transition-label">Task mgmt</div>
+  <div class="transition-stages">
+    <span class="stage">Infinite loop</span><span class="arrow">›</span>
+    <span class="stage">finite task list</span><span class="arrow">›</span>
+    <span class="stage">upfront planning</span><span class="arrow">›</span>
+    <span class="stage">parallel DAG</span><span class="arrow">›</span>
+    <span class="stage">skill + reflection</span><span class="arrow">›</span>
+    <span class="stage"><strong>LLM-native tool loop</strong></span>
+  </div>
+</div>
 
-<p><strong>Memory.</strong> Pinecone embeddings (v1) → session summary string (Bee) → dependency-chain context passing (Cat/Deer) → few-shot example matching via embeddings (Elf) → forever cache + rolling summary (Fox) → function execution logs (v2) → SQLite with entity extraction, knowledge graph, and context assembly (v3).</p>
+<div class="transition-item">
+  <div class="transition-label">Extensibility</div>
+  <div class="transition-stages">
+    <span class="stage">Hardcoded tools</span><span class="arrow">›</span>
+    <span class="stage">skill base class</span><span class="arrow">›</span>
+    <span class="stage">dynamic discovery</span><span class="arrow">›</span>
+    <span class="stage">reflection</span><span class="arrow">›</span>
+    <span class="stage">fn runtime + versioning</span><span class="arrow">›</span>
+    <span class="stage"><strong>self-extending + persistent</strong></span>
+  </div>
+</div>
 
-<p><strong>Execution model.</strong> Sequential (v1–Cat) → threaded parallel (Deer–Fox) → synchronous function calls (v2) → fully async with concurrency semaphores, per-thread locks, and thread pool offloading (v3).</p>
+<div class="transition-item">
+  <div class="transition-label">Memory</div>
+  <div class="transition-stages">
+    <span class="stage">Pinecone embeddings</span><span class="arrow">›</span>
+    <span class="stage">session string</span><span class="arrow">›</span>
+    <span class="stage">dep-chain context</span><span class="arrow">›</span>
+    <span class="stage">few-shot matching</span><span class="arrow">›</span>
+    <span class="stage">forever cache + summary</span><span class="arrow">›</span>
+    <span class="stage">exec logs</span><span class="arrow">›</span>
+    <span class="stage"><strong>SQLite + knowledge graph</strong></span>
+  </div>
+</div>
 
-<p><strong>I/O.</strong> CLI only (v1–Elf) → Flask web chat (Fox) → CLI with dashboard (v2) → multi-channel with listeners/senders, per-channel formatting, and owner/external access control (v3).</p>
+<div class="transition-item">
+  <div class="transition-label">Execution</div>
+  <div class="transition-stages">
+    <span class="stage">Sequential</span><span class="arrow">›</span>
+    <span class="stage">threaded parallel</span><span class="arrow">›</span>
+    <span class="stage">synchronous fns</span><span class="arrow">›</span>
+    <span class="stage"><strong>async + semaphore + thread pool</strong></span>
+  </div>
+</div>
+
+<div class="transition-item">
+  <div class="transition-label">I/O</div>
+  <div class="transition-stages">
+    <span class="stage">CLI print</span><span class="arrow">›</span>
+    <span class="stage">CLI + file</span><span class="arrow">›</span>
+    <span class="stage">Flask web UI</span><span class="arrow">›</span>
+    <span class="stage">CLI + dashboard</span><span class="arrow">›</span>
+    <span class="stage"><strong>multi-channel + access control</strong></span>
+  </div>
+</div>
+
+</div>
 
 <div class="label">Lessons</div>
 
 <p class="dim">The codebase progression reveals several non-obvious lessons for agent builders:</p>
 
-<p>Explicit planners are fragile. Every version that used an LLM to generate and manage a task list struggled with JSON parsing errors, task ID conflicts, and dependency loops. The most robust versions (2o, 3) let the LLM plan implicitly through sequential tool calls.</p>
+<div class="lessons-grid">
 
-<p>Self-improvement needs persistence. BabyFoxAGI's <code>reflect_skills()</code> identified missing skills but couldn't act on it. BabyAGI 2's function versioning stored improvements but lacked the runtime to use them dynamically. BabyAGI 3 closes the loop: create tool → persist to DB → reload on startup.</p>
+<div class="lesson-card" data-num="01">
+  <div class="lesson-title">Explicit planners are fragile</div>
+  <p>Every version that used an LLM to generate and manage a task list struggled with JSON parsing errors, task ID conflicts, and dependency loops. The most robust versions (2o, 3) let the LLM plan implicitly through sequential tool calls.</p>
+</div>
 
-<p>Context window management is a production concern that dwarfs architectural elegance. BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic.</p>
+<div class="lesson-card" data-num="02">
+  <div class="lesson-title">Self-improvement needs persistence</div>
+  <p>BabyFoxAGI's <code>reflect_skills()</code> identified missing skills but couldn't act on it. BabyAGI 2 stored improvements but lacked the runtime. BabyAGI 3 closes the loop: create tool → persist to DB → reload on startup.</p>
+</div>
 
-<p>The minimal viable agent is shockingly small (174 lines). Everything beyond that is error handling, persistence, concurrency, and I/O — the same concerns that dominate any production system.</p>
+<div class="lesson-card" data-num="03">
+  <div class="lesson-title">Context management dwarfs agent logic</div>
+  <p>BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic. The core loop is ~500 lines; infrastructure is ~11,500.</p>
+</div>
+
+<div class="lesson-card" data-num="04">
+  <div class="lesson-title">The minimal viable agent is 174 lines</div>
+  <p>Everything beyond BabyAGI 2o's radical compression is error handling, persistence, concurrency, and I/O — the same concerns that dominate any production system, not agent-specific problems.</p>
+</div>
+
+<div class="lesson-card" data-num="05">
+  <div class="lesson-title">Model-agnosticism is an architectural decision</div>
+  <p>The classic era hardcoded GPT model strings. Switching to LiteLLM in v2/2o was more than convenience — it changed the design from "build for GPT-4's quirks" to "build for any model's capabilities." Every subsequent abstraction got cleaner.</p>
+</div>
+
+<div class="lesson-card" data-num="06">
+  <div class="lesson-title">The task list was the wrong abstraction</div>
+  <p>Six versions refined the task list (single deps → multi deps → parallel → reflective). The breakthrough was abandoning it entirely. Modern tool-calling APIs let the LLM maintain its plan in its own reasoning, which turns out to be more reliable than any external data structure.</p>
+</div>
+
+<div class="lesson-card" data-num="07">
+  <div class="lesson-title">Multi-channel I/O changes the agent's identity</div>
+  <p>When the same agent can receive email, iMessage, and CLI input, the system prompt becomes channel-aware. The agent must adapt tone, format, and access control per-message — a design concern that none of the single-channel versions anticipated.</p>
+</div>
+
+<div class="lesson-card" data-num="08">
+  <div class="lesson-title">Graphs beat flat memory</div>
+  <p>The parallel Instagraph → MindGraph → Graphista line proved that LLMs can maintain structured knowledge graphs. BabyAGI 3's memory reflects this: entity extraction, knowledge graph queries, and embedding search — not just a rolling summary or chat log.</p>
+</div>
+
+</div>
 
 </section>
 
@@ -1615,6 +1810,26 @@ BabyAGI 3   ██████████████████████�
   <td></td>
 </tr>
 <tr>
+  <td>Graph projects</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="highlight">Instagraph</td>
+  <td></td>
+  <td style="font-style: italic; color: var(--text-dim);">MindGraph</td>
+  <td></td>
+  <td>GraphRAG</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td style="font-style: italic; color: var(--text-dim);">Graphista</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr style="border-top: 1px solid var(--border-light);">
   <td>BabyAGI insight</td>
   <td></td>
   <td style="font-style: italic; color: var(--text-dim);">LLMs can chain tasks</td>
@@ -1661,6 +1876,111 @@ BabyAGI 3   ██████████████████████�
   Generated February 7, 2026.
 </div>
 </footer>
+
+<script>
+// ─── Active nav highlighting via IntersectionObserver ───
+(function() {
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  const sections = [];
+  navLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ el, link });
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const match = sections.find(s => s.el === entry.target);
+      if (match) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          match.link.classList.add('active');
+        }
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => observer.observe(s.el));
+})();
+
+// ─── ASCII "+" background that reacts to mouse ───
+(function() {
+  const canvas = document.getElementById('ascii-bg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, cols, rows;
+  const GRID = 28;
+  let mouseX = -1000, mouseY = -1000;
+  const RADIUS = 180;
+  const BASE_ALPHA = 0.04;
+  const HOVER_ALPHA = 0.14;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = document.documentElement.scrollHeight;
+    cols = Math.ceil(W / GRID);
+    rows = Math.ceil(H / GRID);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const scrollY = window.scrollY;
+    const absMouseY = mouseY + scrollY;
+
+    for (let r = 0; r < rows; r++) {
+      const y = r * GRID + GRID / 2;
+      // skip rows far from viewport for perf
+      if (y < scrollY - 200 || y > scrollY + window.innerHeight + 200) continue;
+      for (let c = 0; c < cols; c++) {
+        const x = c * GRID + GRID / 2;
+        const dx = x - mouseX;
+        const dy = y - absMouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let alpha = BASE_ALPHA;
+        if (dist < RADIUS) {
+          const t = 1 - dist / RADIUS;
+          alpha = BASE_ALPHA + (HOVER_ALPHA - BASE_ALPHA) * t * t;
+        }
+        ctx.fillStyle = `rgba(180, 172, 160, ${alpha})`;
+        ctx.fillText('+', x, y);
+      }
+    }
+  }
+
+  let raf;
+  function loop() {
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => { resize(); });
+  window.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+  window.addEventListener('mouseleave', () => {
+    mouseX = -1000;
+    mouseY = -1000;
+  });
+
+  // Resize on scroll to track full page height
+  let resizeTimeout;
+  window.addEventListener('scroll', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const newH = document.documentElement.scrollHeight;
+      if (Math.abs(newH - H) > 100) resize();
+    }, 200);
+  });
+
+  resize();
+  loop();
+})();
+</script>
 
 </body>
 </html>
