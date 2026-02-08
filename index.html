@@ -645,7 +645,6 @@ nav a.active {
 
 /* ─── Impact section ─── */
 .impact-section {
-  border-top: 2px solid var(--text);
   padding: 3.5rem 0 3rem;
   margin-top: 1rem;
 }
@@ -1331,8 +1330,36 @@ while iteration < max_iterations:
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<div class="timeline-gap">── 16 months ──</div>
+<!-- ═══════════════════════ PIPPIN SIDEBAR ═══════════════════════ -->
+<section class="aside-section" id="pippin-projects">
+<div class="container">
+<div class="version-header">
+  <div class="version-name">Sidebar: The Pippin Experiments</div>
+  <div class="version-date">January 2025 · during the 16-month gap</div>
+</div>
+
+<p>Between BabyAGI 2o and v3, two experiments explored a different framing: what if an agent isn't a task executor but a <em>digital being</em> with personality, energy, mood, and autonomous behavior? The code introduced concepts that BabyAGI hadn't touched — and some that showed up in v3.</p>
+
+<div class="aside-grid">
+
+<div class="aside-card">
+  <div class="aside-card-title">Pippin</div>
+  <div class="aside-card-date">January 21, 2025</div>
+  <p>A <code>DigitalBeing</code> framework (~5,200 lines) built around the concept of <em>activities</em> — autonomous behaviors selected by personality-weighted randomization, gated by energy costs and cooldowns. The agent has mood, energy that regenerates over time, and a character config that influences which activities it prefers. Activities range from tweeting to napping to suggesting new activities for itself. Uses a decorator pattern (<code>@activity(name=..., energy_cost=0.4, cooldown=259200)</code>) for registration, and a short-term/long-term memory consolidation system.</p>
+  <p class="dim">The new idea: an agent that <em>initiates</em> its own behavior based on personality rather than waiting for user input. The activity selector, energy system, and Composio integration for third-party tools all prefigure BabyAGI 3's autonomous objectives and tool ecosystem.</p>
+</div>
+
+<div class="aside-card">
+  <div class="aside-card-title">Pippin Lite</div>
+  <div class="aside-card-date">January 22, 2025</div>
+  <p>A 227-line single-file distillation. Same core pattern as BabyAGI 2o — a tool-calling loop with <code>create_or_update_tool</code> for self-extension — but with Composio tools auto-registered at startup and automatic API key detection from environment variables. Adds <code>task_completed()</code> as an explicit termination signal and <code>install_package()</code> for runtime dependency management.</p>
+  <p class="dim">Essentially BabyAGI 2o plus Composio integration and better environment awareness. The auto-detection of available API keys and self-installing dependencies are small touches that reappear in v3's credential management.</p>
+</div>
+
+</div>
+
+</div>
+</section>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <section class="version" id="v3">
