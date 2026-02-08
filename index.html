@@ -20,7 +20,42 @@
   --serif: 'EB Garamond', Georgia, serif;
 }
 
+/* Dark mode */
+[data-theme="dark"] {
+  --bg: #1a1a1a;
+  --bg-alt: #232323;
+  --text: #e8e6e3;
+  --text-dim: #a8a5a0;
+  --text-faint: #6b6560;
+  --border: #3a3a3a;
+  --border-light: #2d2d2d;
+}
+
 html { font-size: 16px; scroll-behavior: smooth; }
+
+/* Theme toggle button */
+.theme-toggle {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  opacity: 0.6;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
 
 body {
   background: var(--bg);
@@ -37,6 +72,7 @@ body {
 
 /* Header */
 header {
+  position: relative;
   padding: 6rem 0 4rem;
   border-bottom: 1px solid var(--border);
 }
@@ -963,6 +999,9 @@ nav a.active {
 <body>
 
 <header>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <span class="theme-icon">🌙</span>
+</button>
 <div class="container">
   <h1>Technical History</h1>
   <div class="title">BabyAGI</div>
@@ -2440,6 +2479,34 @@ BabyAGI 3   ██████████████████████�
       e.preventDefault();
       openModal(btn.dataset.repo, btn.dataset.name, btn.dataset.branch);
     });
+  });
+})();
+</script>
+
+<script>
+// Theme toggle functionality
+(function() {
+  const toggle = document.getElementById('themeToggle');
+  const icon = toggle.querySelector('.theme-icon');
+  const html = document.documentElement;
+
+  // Check for saved theme preference or default to light mode
+  const savedTheme = localStorage.getItem('theme') || 'light';
+
+  // Apply saved theme
+  if (savedTheme === 'dark') {
+    html.setAttribute('data-theme', 'dark');
+    icon.textContent = '☀️';
+  }
+
+  // Toggle theme on button click
+  toggle.addEventListener('click', function() {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    html.setAttribute('data-theme', newTheme);
+    icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', newTheme);
   });
 })();
 </script>
