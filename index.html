@@ -134,9 +134,10 @@ nav a:hover { color: var(--text); background: var(--bg-alt); }
 }
 .version-date {
   font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--text-faint);
+  font-size: 0.75rem;
+  color: var(--text-dim);
   letter-spacing: 0.04em;
+  font-weight: 400;
 }
 .version-loc {
   font-family: var(--mono);
@@ -409,9 +410,10 @@ footer {
 }
 .aside-card-date {
   font-family: var(--mono);
-  font-size: 0.58rem;
-  color: var(--text-faint);
+  font-size: 0.62rem;
+  color: var(--text-dim);
   margin-bottom: 0.8rem;
+  font-weight: 400;
 }
 .aside-card p {
   font-size: 0.92rem;
@@ -428,6 +430,8 @@ footer {
 /* ─── Complexity heatmap ─── */
 .heatmap-wrap {
   margin: 1.5rem 0 2rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .heatmap {
   display: grid;
@@ -436,6 +440,7 @@ footer {
   font-family: var(--mono);
   font-size: 0.6rem;
   max-width: 700px;
+  min-width: 520px;
 }
 .heatmap-header {
   text-align: center;
@@ -1933,7 +1938,7 @@ BabyAGI 3   ██████████████████████�
 
 <p>The original release — alongside AutoGPT, which launched the same week — was part of the first wave of agent experimentation. CrewAI, LangGraph, and dozens of others followed within the year, each exploring variations on the same core pattern. BabyAGI's contribution was proving its simplicity: a while loop, an LLM call, and a task queue is all you need to get emergent multi-step behavior.</p>
 
-<p>The later versions mattered differently. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. BabyAGI 3's expansion to 33,000 lines showed the opposite truth: production agents aren't hard because of the AI, they're hard because of everything else.</p>
+<p>The later versions mattered differently. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. BabyAGI 3's expansion to 33,000 lines showed the opposite truth: production agents aren't hard because of the AI, they're hard because of everything else — context window limits, concurrent execution, multi-channel I/O, error recovery, cost control, and the thousand small decisions about what to do when things go wrong. The parallel graph projects (Instagraph, MindGraph, Graphista) showed that the same progression applies to memory: what starts as a single LLM call eventually becomes a full system with persistence, deduplication, ontology, and retrieval. Together, the nine versions and three graph experiments form a public record of one person learning, in real time, what it actually takes to build an agent that works.</p>
 
 <p class="dim" style="margin-top: 1.5rem;">The complete source code for all nine versions is available at <a href="https://github.com/yoheinakajima/babyagi" style="color: var(--text-dim);">github.com/yoheinakajima/babyagi</a>.</p>
 
