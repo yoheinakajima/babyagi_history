@@ -532,48 +532,60 @@ footer {
   flex-shrink: 0;
 }
 
-/* ─── Lessons callout cards ─── */
+/* ─── Lessons ─── */
 .lessons-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0;
   margin: 1.5rem 0 2rem;
 }
 .lesson-card {
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 1.3rem 1.4rem;
-  background: var(--bg-alt);
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border-light);
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0 1.2rem;
+  grid-template-columns: 2rem 1fr;
+  gap: 0;
   align-items: baseline;
 }
+.lesson-card:first-child { border-top: 1px solid var(--border-light); }
 .lesson-card::before {
   content: attr(data-num);
   font-family: var(--mono);
   font-size: 0.55rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-faint);
-  letter-spacing: 0.08em;
-  grid-row: 1 / 3;
-  padding-top: 0.1rem;
+  letter-spacing: 0.04em;
+  padding-top: 0.2rem;
 }
 .lesson-title {
   font-family: var(--serif);
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 0.3rem;
-  line-height: 1.3;
+  display: inline;
 }
 .lesson-card p {
-  font-size: 0.95rem;
+  font-size: 1.02rem;
   margin-bottom: 0;
   color: var(--text-dim);
-  line-height: 1.6;
+  line-height: 1.65;
   grid-column: 2;
+  display: inline;
+}
+.lesson-card .lesson-body { grid-column: 2; }
+
+/* ─── Mobile scroll hint ─── */
+.scroll-hint {
+  display: none;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--text-faint);
+  margin-left: 0.5rem;
+  font-weight: 300;
+}
+@media (max-width: 640px) {
+  .scroll-hint { display: inline; }
 }
 
 /* ─── Architectural transitions styled list ─── */
@@ -720,11 +732,11 @@ nav a.active {
 <section class="summary" id="summary">
 <div class="label">Overview</div>
 
-<p>BabyAGI started as a weekend experiment: 138 lines of Python that looped forever, chaining LLM calls to execute tasks. Over three years and nine iterations, it became a testing ground for every major idea in autonomous agent design — task graphs, parallel execution, plugin systems, self-extending tools, persistent memory, multi-channel I/O. Each version asked a different question about what it takes to build an agent that can actually do things on its own.</p>
+<p>BabyAGI started as a weekend experiment: 105 lines of Python that looped forever, chaining LLM calls to execute tasks. Over three years and nine iterations, it became a testing ground for every major idea in autonomous agent design — task graphs, parallel execution, plugin systems, self-extending tools, persistent memory, multi-channel I/O. Each version asked a different question about what it takes to build an agent that can actually do things on its own.</p>
 
 <p class="dim">The journey mirrors the broader evolution of the agent ecosystem. The <strong>classic era</strong> (Apr–Sep 2023) explored task list architectures during the initial burst of excitement after GPT-4. The <strong>framework era</strong> (Sep–Oct 2024) reconsidered the problem from first principles as tool-calling APIs matured. The <strong>production era</strong> (Feb 2026) confronted everything the earlier versions ignored: error recovery, context management, concurrency, and real-world I/O.</p>
 
-<div class="label">Comparison</div>
+<div class="label">Comparison <span class="scroll-hint">scroll →</span></div>
 
 <div class="comparison-wrap">
 <table class="comparison-table">
@@ -757,7 +769,7 @@ nav a.active {
 </tr>
 <tr>
   <td>Lines</td>
-  <td>138</td>
+  <td>105</td>
   <td>300</td>
   <td>320</td>
   <td>354</td>
@@ -937,7 +949,7 @@ nav a.active {
   <div class="version-name">BabyAGI</div>
   <div class="version-date">April 4, 2023</div>
 </div>
-<div class="version-loc">138 lines · single file · Python</div>
+<div class="version-loc">105 lines · single file · Python</div>
 
 <p>The original BabyAGI is a deceptively simple infinite loop: execute a task, store the result, create new tasks, reprioritize, repeat. The entire system is three LLM calls chained inside a <code>while True</code>.</p>
 
@@ -1185,17 +1197,15 @@ objective ──► reflect_on_objective() ──► create_tasklist()
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<div class="timeline-gap">── 13 months ──</div>
-
 <!-- ═══════════════════════ GRAPH PROJECTS ASIDE ═══════════════════════ -->
 <section class="aside-section" id="graph-projects">
 <div class="container">
 <div class="version-header">
   <div class="version-name">Sidebar: The Graph Thread</div>
-  <div class="version-date">2023–2025</div>
+  <div class="version-date">2023–2025 · during the 13-month gap</div>
 </div>
 
-<p>During the 13-month gap between BabyFoxAGI and BabyAGI 2, three standalone projects explored a parallel question: can LLMs build and maintain structured knowledge graphs? The ideas developed here — schema-driven extraction, plugin architectures, persistent graph storage — directly influenced BabyAGI 2's function registration system and BabyAGI 3's memory architecture.</p>
+<p>Between BabyFoxAGI and BabyAGI 2, three standalone projects explored a parallel question: can LLMs build and maintain structured knowledge graphs? The ideas developed here — schema-driven extraction, plugin architectures, persistent graph storage — directly influenced BabyAGI 2's function registration system and BabyAGI 3's memory architecture.</p>
 
 <div class="aside-grid">
 
@@ -1447,7 +1457,7 @@ class Objective:
 
 <div class="label">Lines of Code</div>
 <div class="arch">
-BabyAGI     ████                                           138
+BabyAGI     ████                                           105
 BabyBeeAGI  █████████                                      300
 BabyCatAGI  ██████████                                     320
 BabyDeerAGI ███████████                                    354
@@ -1457,7 +1467,7 @@ BabyAGI 2o  █████                                          174
 BabyAGI 2   ████████████████████████████████████████████  5,962
 BabyAGI 3   █████████████████████████████████████████████33,506</div>
 
-<div class="label">Capability Heatmap</div>
+<div class="label">Capability Heatmap <span class="scroll-hint">scroll →</span></div>
 <p class="dim">Each cell shows when a capability appeared and how sophisticated it became. Darker = more advanced implementation.</p>
 
 <div class="heatmap-wrap">
@@ -1682,28 +1692,23 @@ BabyAGI 3   ██████████████████████�
 <div class="lessons-grid">
 
 <div class="lesson-card" data-num="01">
-  <div class="lesson-title">The task list was the wrong abstraction</div>
-  <p>Six versions refined the explicit task list — single deps, multi deps, parallel DAG, reflective. The breakthrough was abandoning it. Modern tool-calling APIs let the LLM maintain its plan in its own reasoning, which turns out to be more reliable than any external data structure.</p>
+  <div class="lesson-body"><span class="lesson-title">A few hundred lines is a powerful benchmark.</span> <p>The original BabyAGI proved that 105 lines could produce emergent multi-step behavior. BabyAGI 2o later showed that even with tool calling and self-extension, the core agent fits in a few hundred lines. Everything beyond that is production concerns — the same concerns that dominate any real system.</p></div>
 </div>
 
 <div class="lesson-card" data-num="02">
-  <div class="lesson-title">The minimal viable agent is 174 lines</div>
-  <p>Everything beyond BabyAGI 2o's radical compression is error handling, persistence, concurrency, and I/O — the same concerns that dominate any production system, not agent-specific problems. The core loop is <2% of BabyAGI 3's codebase.</p>
+  <div class="lesson-body"><span class="lesson-title">Task management gets layered, not eliminated.</span> <p>The classic-era task list wasn't wrong — it was too simple. Long-running objectives shouldn't block chat. Background tasks need their own threads, budgets, and retry logic. BabyAGI 3's objectives system is far more sophisticated than a list, but the core idea of structured task tracking persists.</p></div>
 </div>
 
 <div class="lesson-card" data-num="03">
-  <div class="lesson-title">Self-improvement needs persistence</div>
-  <p>BabyFoxAGI's <code>reflect_skills()</code> identified missing skills but couldn't act on it. BabyAGI 2 stored improvements but lacked the runtime. BabyAGI 3 closes the loop: create tool → persist to DB → reload on startup.</p>
+  <div class="lesson-body"><span class="lesson-title">Self-improvement needs persistence.</span> <p>BabyFoxAGI's <code>reflect_skills()</code> identified missing skills but couldn't act on it. BabyAGI 2 stored improvements but lacked the runtime. BabyAGI 3 closes the loop: create tool → persist to DB → reload on startup.</p></div>
 </div>
 
 <div class="lesson-card" data-num="04">
-  <div class="lesson-title">Context management dwarfs agent logic</div>
-  <p>BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic. Infrastructure is ~11,500 lines; the core loop is ~500.</p>
+  <div class="lesson-body"><span class="lesson-title">Context management dwarfs agent logic.</span> <p>BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic. Infrastructure is ~11,500 lines; the core loop is ~500.</p></div>
 </div>
 
 <div class="lesson-card" data-num="05">
-  <div class="lesson-title">Graphs beat flat memory</div>
-  <p>The parallel Instagraph → MindGraph → Graphista line proved that LLMs can maintain structured knowledge graphs through tool calls. BabyAGI 3's memory absorbed this: entity extraction, knowledge graph queries, and embedding search — not just a rolling summary.</p>
+  <div class="lesson-body"><span class="lesson-title">Graphs beat flat memory.</span> <p>The parallel Instagraph → MindGraph → Graphista line proved that LLMs can maintain structured knowledge graphs through tool calls. BabyAGI 3's memory absorbed this: entity extraction, knowledge graph queries, and embedding search — not just a rolling summary.</p></div>
 </div>
 
 </div>
@@ -1717,7 +1722,7 @@ BabyAGI 3   ██████████████████████�
   <div class="version-date">BabyAGI in context</div>
 </div>
 
-<p>BabyAGI didn't evolve in isolation. The timeline below maps each version against the industry milestones that shaped it — organized by the concepts that matter to agent builders rather than by calendar.</p>
+<p>BabyAGI didn't evolve in isolation. The timeline below maps each version against the industry milestones that shaped it — organized by the concepts that matter to agent builders rather than by calendar. <span class="scroll-hint">scroll →</span></p>
 
 </div><!-- close container for full-width timeline -->
 
@@ -1894,12 +1899,16 @@ BabyAGI 3   ██████████████████████�
 
 <div class="label" style="margin-top: 1.5rem;">How the concepts connect</div>
 
+<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">Tool calling killed the planner</div>
 <p>The evolution of tool calling directly shaped BabyAGI's architecture. The classic era (v1–Fox) predated OpenAI's function calling API — every version had to invent its own mechanism for getting an LLM to choose and invoke tools, typically via fragile JSON parsing from chat completions. When function calling launched in June '23, it validated BabyFoxAGI's approach (which had landed days earlier using the same pattern). But it also made the explicit task list unnecessary: if the model can natively call functions, why maintain a separate planner?</p>
 
+<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">The 13-month absorption</div>
 <p>That insight took 13 months to crystallize. The gap between Fox (Sep '23) and v2 (Sep '24) spans the arrival of the Assistants API, Claude tool use, GPT-4o, CrewAI, LangGraph, and structured outputs — a complete rewiring of the agent infrastructure stack. When BabyAGI returned, it had absorbed all of it: v2 replaced the task list with a function runtime, and 2o compressed the entire agent to 174 lines by delegating planning to native tool calling.</p>
 
+<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">From tools to interop</div>
 <p>The second gap (Oct '24 → Feb '26) coincided with MCP and the OpenAI Agents SDK — the industry's shift from "how do agents call tools" to "how do agents interoperate." BabyAGI 3 reflects this: multi-channel I/O, standardized tool registration, and the production infrastructure (context management, budgeting, error recovery) that none of the earlier versions or frameworks addressed.</p>
 
+<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">The quiet revolution</div>
 <p>Structured outputs (Aug '24) are the quiet revolution in this timeline. Before them, every agent framework spent significant code parsing LLM responses into actionable data — BabyAGI's classic era is littered with <code>json.loads()</code> wrapped in try/except. Structured outputs eliminated that entire class of failure, and BabyAGI 2o's radical simplicity (174 lines) is partly possible because it doesn't need response parsing infrastructure.</p>
 
 </section>
@@ -1915,30 +1924,15 @@ BabyAGI 3   ██████████████████████�
   <div class="version-name">Impact</div>
 </div>
 
-<p>BabyAGI's influence is less about the code itself — most of it was intentionally disposable — and more about what it demonstrated at each stage. The original 138-line script, released days after GPT-4, showed thousands of developers that autonomous agents were not a research project but a weekend hack. Each subsequent version served as a public experiment in a different architectural bet.</p>
+<p>BabyAGI's influence is less about the code itself — most of it was intentionally disposable — and more about what it demonstrated at each stage. The original 105-line script, released days after GPT-4, showed tens of thousands of developers that autonomous agents were within reach. Each subsequent version served as a public experiment in a different architectural bet.</p>
 
 <div class="accent-line"></div>
 
-<div class="impact-grid">
-  <div class="impact-stat">
-    <div class="impact-num">20k+</div>
-    <div class="impact-desc">GitHub stars</div>
-  </div>
-  <div class="impact-stat">
-    <div class="impact-num">9</div>
-    <div class="impact-desc">versions across 3 years</div>
-  </div>
-  <div class="impact-stat">
-    <div class="impact-num">138 → 33k</div>
-    <div class="impact-desc">lines of code, first to last</div>
-  </div>
-</div>
+<p>The original release — alongside AutoGPT, which launched the same week — kicked off the first wave of agent experimentation. CrewAI, Lovable, and dozens of others followed within the year, each exploring variations on the same core pattern. BabyAGI's contribution was proving its simplicity: a while loop, an LLM call, and a task queue is all you need to get emergent multi-step behavior.</p>
 
-<div class="accent-line"></div>
+<p>The later versions mattered differently. BabyAGI 2 introduced the idea of functions as first-class entities with versioning and dependency resolution — a pattern that influenced how developers thought about composable agent capabilities. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. And BabyAGI 3's expansion to 33,000 lines showed the opposite truth: production agents aren't hard because of the AI, they're hard because of everything else — context window limits, concurrent execution, multi-channel I/O, error recovery, cost control, and the thousand small decisions about what to do when things go wrong.</p>
 
-<p>The original release — alongside AutoGPT, which launched the same week — was part of the first wave of agent experimentation. CrewAI, LangGraph, and dozens of others followed within the year, each exploring variations on the same core pattern. BabyAGI's contribution was proving its simplicity: a while loop, an LLM call, and a task queue is all you need to get emergent multi-step behavior.</p>
-
-<p>The later versions mattered differently. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. BabyAGI 3's expansion to 33,000 lines showed the opposite truth: production agents aren't hard because of the AI, they're hard because of everything else — context window limits, concurrent execution, multi-channel I/O, error recovery, cost control, and the thousand small decisions about what to do when things go wrong. The parallel graph projects (Instagraph, MindGraph, Graphista) showed that the same progression applies to memory: what starts as a single LLM call eventually becomes a full system with persistence, deduplication, ontology, and retrieval. Together, the nine versions and three graph experiments form a public record of one person learning, in real time, what it actually takes to build an agent that works.</p>
+<p>Together, the nine versions form a public record of one person learning, in real time, what it actually takes to build an agent that works.</p>
 
 <p class="dim" style="margin-top: 1.5rem;">The complete source code for all nine versions is available at <a href="https://github.com/yoheinakajima/babyagi" style="color: var(--text-dim);">github.com/yoheinakajima/babyagi</a>.</p>
 
