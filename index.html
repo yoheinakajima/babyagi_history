@@ -2202,16 +2202,30 @@ BabyAGI 3   ██████████████████████�
     const el = document.getElementById(id);
     if (el) sections.push({ el, link });
   });
+  /* ── Center active nav item in scroll container ── */
+  const navContainer = document.querySelector('nav .container');
+  function centerActiveNav(link) {
+    if (!navContainer) return;
+    const scrollLeft = link.offsetLeft - navContainer.offsetWidth / 2 + link.offsetWidth / 2;
+    navContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+  }
+
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       const match = sections.find(s => s.el === entry.target);
       if (match && entry.isIntersecting) {
         navLinks.forEach(l => l.classList.remove('active'));
         match.link.classList.add('active');
+        centerActiveNav(match.link);
       }
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
   sections.forEach(s => observer.observe(s.el));
+
+  /* Center nav item immediately on tap */
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => centerActiveNav(link));
+  });
 
   /* ── Source code modal ── */
   var treeCache = {};
