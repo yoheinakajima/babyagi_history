@@ -391,7 +391,7 @@ footer {
 }
 .aside-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin: 1.5rem 0;
 }
@@ -733,7 +733,7 @@ nav a.active {
 
 <p>BabyAGI started as a weekend experiment: 105 lines of Python that looped forever, chaining LLM calls to execute tasks. Over three years and nine iterations, it became a testing ground for every major idea in autonomous agent design — task graphs, parallel execution, plugin systems, self-extending tools, persistent memory, multi-channel I/O. Each version asked a different question about what it takes to build an agent that can actually do things on its own.</p>
 
-<p class="dim">The journey mirrors the broader evolution of the agent ecosystem. The <strong>classic era</strong> (Apr–Sep 2023) explored task list architectures during the initial burst of excitement after GPT-4. The <strong>framework era</strong> (Sep–Oct 2024) reconsidered the problem from first principles as tool-calling APIs matured. The <strong>production era</strong> (Feb 2026) confronted everything the earlier versions ignored: error recovery, context management, concurrency, and real-world I/O.</p>
+<p class="dim">The journey mirrors the broader evolution of the agent ecosystem. The <strong>classic era</strong> (Apr–Sep 2023) explored task list architectures during the initial burst of excitement after GPT-4. The <strong>framework era</strong> (Sep–Oct 2024) reconsidered the problem from first principles as tool-calling APIs matured. The <strong>assistant era</strong> (Feb 2026) confronted everything the earlier versions ignored: error recovery, context management, concurrency, and real-world I/O — building not just an agent but an autonomous assistant.</p>
 
 <div class="label">Comparison <span class="scroll-hint">scroll →</span></div>
 
@@ -932,7 +932,7 @@ nav a.active {
   <td>chat + reflection</td>
   <td>functions as atoms</td>
   <td>LLM is the planner</td>
-  <td>production agent</td>
+  <td>autonomous assistant</td>
 </tr>
 </tbody>
 </table>
@@ -1369,7 +1369,7 @@ while iteration < max_iterations:
 </div>
 <div class="version-loc">~33,500 lines · 70+ files · Python (async)</div>
 
-<p>BabyAGI 3 is a production-grade autonomous agent. The core insight from the codebase docstring: <em>"Everything is still a message."</em> User input, tool execution, background objectives, scheduled tasks — all messages in conversation threads. The architecture extends the BabyAGI 2o pattern (LLM + tool loop) but adds every production concern: memory, multi-channel I/O, scheduling, budget tracking, context management, self-improvement, and error recovery.</p>
+<p>BabyAGI 3 is an autonomous assistant — not a task executor but a persistent agent that listens, remembers, and acts across channels. The core insight from the codebase docstring: <em>"Everything is still a message."</em> User input, tool execution, background objectives, scheduled tasks — all messages in conversation threads. The architecture extends the BabyAGI 2o pattern (LLM + tool loop) but adds every production concern: memory, multi-channel I/O, scheduling, budget tracking, context management, self-improvement, and error recovery.</p>
 
 <div class="label">Architecture</div>
 <div class="arch">
@@ -1465,7 +1465,7 @@ class Objective:
 <div class="label">Resilience</div>
 <p>Thread repair fixes orphaned <code>tool_use</code> blocks (a common crash mode). 3-stage context overflow recovery. Per-thread locks prevent race conditions between concurrent sources. Large tool results are summarized by a fast model before entering the context. Graceful fallbacks at every layer — broken tools are disabled rather than crashing startup.</p>
 
-<div class="insight">BabyAGI 3 is the synthesis. The 2o insight (LLM is the planner) becomes the core loop. The classic-era skills become persisted tools. The Fox-era reflection becomes structured memory. The v2 function runtime becomes the tool registration system. And the whole thing is wrapped in the production engineering that the earlier versions deliberately omitted: async, concurrency control, budget limits, error recovery, multi-channel I/O, and context window management.</div>
+<div class="insight">BabyAGI 3 is the synthesis — and the shift from agent to autonomous assistant. The 2o insight (LLM is the planner) becomes the core loop. The classic-era skills become persisted tools. The Fox-era reflection becomes structured memory. The Pippin-era personality becomes channel-aware behavior. The v2 function runtime becomes the tool registration system. And the whole thing is wrapped in the engineering that turns a prototype into something you can actually leave running: async, concurrency control, budget limits, error recovery, multi-channel I/O, and context window management.</div>
 
 <div class="stats">
   <div class="stat"><div class="stat-value">~33.5k</div><div class="stat-label">lines</div></div>
@@ -1916,7 +1916,7 @@ BabyAGI 3   ██████████████████████�
   <td></td>
   <td></td>
   <td></td>
-  <td style="font-style: italic; color: var(--text-dim);">production agent</td>
+  <td style="font-style: italic; color: var(--text-dim);">autonomous assistant</td>
 </tr>
 </tbody>
 </table>
@@ -1957,7 +1957,7 @@ BabyAGI 3   ██████████████████████�
 
 <p>The original release — alongside AutoGPT, which launched the same week — kicked off the first wave of agent experimentation. CrewAI, Lovable, and dozens of others followed within the year, each exploring variations on the same core pattern. BabyAGI's contribution was proving its simplicity: a while loop, an LLM call, and a task queue is all you need to get emergent multi-step behavior.</p>
 
-<p>The later versions mattered differently. BabyAGI 2 introduced the idea of functions as first-class entities with versioning and dependency resolution — a pattern that influenced how developers thought about composable agent capabilities. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. And BabyAGI 3's expansion to 33,000 lines showed the opposite truth: production agents aren't hard because of the AI, they're hard because of everything else — context window limits, concurrent execution, multi-channel I/O, error recovery, cost control, and the thousand small decisions about what to do when things go wrong.</p>
+<p>The later versions mattered differently. BabyAGI 2 introduced the idea of functions as first-class entities with versioning and dependency resolution — a pattern that influenced how developers thought about composable agent capabilities. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. And BabyAGI 3's expansion to 33,000 lines showed the opposite truth: building an autonomous assistant isn't hard because of the AI, it's hard because of everything else — context window limits, concurrent execution, multi-channel I/O, error recovery, cost control, and the thousand small decisions about what to do when things go wrong.</p>
 
 <p>Together, the nine versions form a public record of one person learning, in real time, what it actually takes to build an agent that works.</p>
 
