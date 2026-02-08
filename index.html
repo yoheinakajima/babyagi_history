@@ -121,6 +121,17 @@ nav a:hover { color: var(--text); background: var(--bg-alt); }
   font-weight: 500;
   letter-spacing: -0.01em;
 }
+.version-name::before {
+  content: '+';
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 300;
+  color: var(--border);
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  position: relative;
+  top: -0.15rem;
+}
 .version-date {
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -518,9 +529,9 @@ footer {
 
 /* ─── Lessons callout cards ─── */
 .lessons-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   margin: 1.5rem 0 2rem;
 }
 .lesson-card {
@@ -529,6 +540,10 @@ footer {
   padding: 1.3rem 1.4rem;
   background: var(--bg-alt);
   position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 1.2rem;
+  align-items: baseline;
 }
 .lesson-card::before {
   content: attr(data-num);
@@ -537,15 +552,15 @@ footer {
   font-weight: 500;
   color: var(--text-faint);
   letter-spacing: 0.08em;
-  display: block;
-  margin-bottom: 0.5rem;
+  grid-row: 1 / 3;
+  padding-top: 0.1rem;
 }
 .lesson-title {
   font-family: var(--serif);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.3rem;
   line-height: 1.3;
 }
 .lesson-card p {
@@ -553,6 +568,7 @@ footer {
   margin-bottom: 0;
   color: var(--text-dim);
   line-height: 1.6;
+  grid-column: 2;
 }
 
 /* ─── Architectural transitions styled list ─── */
@@ -601,15 +617,47 @@ nav a.active {
   padding-bottom: 1px;
 }
 
-/* ─── ASCII background canvas ─── */
-#ascii-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  pointer-events: none;
+/* ─── Accent decorations (CSS only) ─── */
+.accent-line {
+  width: 40px;
+  height: 2px;
+  background: var(--border);
+  margin: 2rem 0;
+}
+.accent-line.center { margin-left: auto; margin-right: auto; }
+
+/* ─── Impact section ─── */
+.impact-section {
+  border-top: 2px solid var(--text);
+  padding: 3.5rem 0 3rem;
+  margin-top: 1rem;
+}
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem 0;
+}
+.impact-stat {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+.impact-num {
+  font-family: var(--serif);
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.impact-desc {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+@media (max-width: 640px) {
+  .impact-grid { grid-template-columns: 1fr; gap: 1rem; }
 }
 
 /* Responsive */
@@ -621,7 +669,6 @@ nav a.active {
   header { padding: 4rem 0 3rem; }
   .version-header { grid-template-columns: 1fr; }
   .aside-grid { grid-template-columns: 1fr; }
-  .lessons-grid { grid-template-columns: 1fr; }
   .transition-item { grid-template-columns: 1fr; gap: 0.3rem; }
   /* Tables: keep in container on mobile */
   .comparison-wrap {
@@ -634,14 +681,13 @@ nav a.active {
 </head>
 <body>
 
-<canvas id="ascii-bg"></canvas>
-
 <header>
 <div class="container">
   <h1>Technical History</h1>
   <div class="title">BabyAGI</div>
   <div class="subtitle">One person's three-year journey exploring autonomous agents through code. Nine versions, nine different bets on how to build an AI that can act on its own — traced through the source.</div>
   <div class="meta">April 2023 – February 2026 &nbsp;·&nbsp; Yohei Nakajima &nbsp;·&nbsp; Analysis from source code</div>
+  <div class="accent-line" style="margin-top: 2.5rem; margin-bottom: 0;"></div>
 </div>
 </header>
 
@@ -653,6 +699,7 @@ nav a.active {
   <a href="#deer">Deer</a>
   <a href="#elf">Elf</a>
   <a href="#fox">Fox</a>
+  <a href="#graph-projects">Graphs</a>
   <a href="#v2">v2</a>
   <a href="#v2o">2o</a>
   <a href="#v3">v3</a>
@@ -1135,6 +1182,46 @@ objective ──► reflect_on_objective() ──► create_tasklist()
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="timeline-gap">── 13 months ──</div>
 
+<!-- ═══════════════════════ GRAPH PROJECTS ASIDE ═══════════════════════ -->
+<section class="aside-section" id="graph-projects">
+<div class="container">
+<div class="version-header">
+  <div class="version-name">Sidebar: The Graph Thread</div>
+  <div class="version-date">2023–2025</div>
+</div>
+
+<p>During the 13-month gap between BabyFoxAGI and BabyAGI 2, three standalone projects explored a parallel question: can LLMs build and maintain structured knowledge graphs? The ideas developed here — schema-driven extraction, plugin architectures, persistent graph storage — directly influenced BabyAGI 2's function registration system and BabyAGI 3's memory architecture.</p>
+
+<div class="aside-grid">
+
+<div class="aside-card">
+  <div class="aside-card-title">Instagraph</div>
+  <div class="aside-card-date">September 12, 2023</div>
+  <p>Text in, knowledge graph out. A single API call to GPT-4 with a prompt asking it to identify entities and relationships, rendered with Cytoscape.js. No persistence, no schema, no deduplication — just <code>postData("/get_response_data", payload)</code> and a <code>cose</code> layout.</p>
+  <p class="dim">The proof of concept: LLMs can extract structured graphs from unstructured text without custom NLP pipelines.</p>
+</div>
+
+<div class="aside-card">
+  <div class="aside-card-title">MindGraph</div>
+  <div class="aside-card-date">March 16, 2024</div>
+  <p>A Flask app with a plugin integration system, schema-driven entity types, CRUD operations, and search. Uses OpenAI's function calling API with a <code>knowledge_graph</code> function definition to get structured extraction — entities, relationships, and source snippets — rather than hoping the LLM returns valid JSON.</p>
+  <p class="dim">The integration manager pattern and schema-as-function-signature approach both reappear in BabyAGI 2's function registration and BabyAGI 3's tool system.</p>
+</div>
+
+<div class="aside-card">
+  <div class="aside-card-title">Graphista</div>
+  <div class="aside-card-date">February 15, 2025</div>
+  <p>Full graph-based memory system. Two LLM loops: <code>ingest()</code> processes text through a SmartNodeProcessor (entity extraction, deduplication, graph updates via chain-of-thought) and <code>ask()</code> answers questions via SmartRetrievalTool with multi-step reasoning. Supports multiple backends (local JSON, Neo4j, FalkorDB), ontology-driven schemas, embeddings, and batch operations.</p>
+  <p class="dim">The memory architecture that BabyAGI 3 absorbed: persistent graph storage, LLM-powered entity extraction, and embedding-based retrieval — all wrapped in a clean <code>Memory</code> class.</p>
+</div>
+
+</div>
+
+<p class="dim">The progression from "ask the LLM once" (Instagraph) to "let the LLM manage a persistent graph through structured tool calls" (MindGraph → Graphista) traces the same arc as BabyAGI itself. The graph became the agent's memory layer — BabyAGI 3's SQLite-backed knowledge graph with entity extraction is the direct descendant of this work.</p>
+
+</div>
+</section>
+
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <section class="version" id="v2">
 <div class="version-header">
@@ -1143,7 +1230,7 @@ objective ──► reflect_on_objective() ──► create_tasklist()
 </div>
 <div class="version-loc">~5,960 lines · 40+ files · Python package</div>
 
-<p>BabyAGI 2 is a complete rewrite. The concept shifts from "task list execution" to <strong>functions as first-class entities</strong>. The core abstraction is <code>Functionz</code> — a framework where every capability is a registered function with versioning, dependency resolution, logging, triggers, and a database backend.</p>
+<p>BabyAGI 2 is a complete rewrite, informed by the graph experiments above. The concept shifts from "task list execution" to <strong>functions as first-class entities</strong>. The core abstraction is <code>Functionz</code> — a framework where every capability is a registered function with versioning, dependency resolution, logging, triggers, and a database backend. MindGraph's integration manager pattern reappears here as a general-purpose function registry.</p>
 
 <div class="label">Architecture</div>
 <div class="arch">
@@ -1325,7 +1412,7 @@ class Objective:
 <p>Max 5 concurrent objectives via semaphore. Failed objectives retry with exponential backoff (2s, 4s, 8s). Each retry receives the full error history so the LLM can adapt its approach. Budget/token limits halt execution when exceeded.</p>
 
 <div class="label">Memory</div>
-<p>SQLite-backed persistent memory with event logging, entity extraction, knowledge graph, embeddings search, and context assembly. Memory is assembled into the system prompt dynamically. The <code>ToolContextBuilder</code> selects which tools to include in each API call based on query relevance, usage patterns, and current channel.</p>
+<p>SQLite-backed persistent memory with event logging, entity extraction, knowledge graph, embeddings search, and context assembly — the direct descendant of the Instagraph → MindGraph → Graphista line. Memory is assembled into the system prompt dynamically. The <code>ToolContextBuilder</code> selects which tools to include in each API call based on query relevance, usage patterns, and current channel.</p>
 
 <div class="label">Self-Improvement</div>
 <p>Tools created at runtime via <code>register_tool</code> are persisted to the database and reloaded on startup. Three tool types: executable (Python code), skill (behavioral instructions), and composio (third-party wrappers). External packages detected via AST analysis are sandboxed in e2b. Tools track execution statistics for monitoring.</p>
@@ -1343,46 +1430,6 @@ class Objective:
   <div class="stat"><div class="stat-value">async</div><div class="stat-label">runtime</div></div>
   <div class="stat"><div class="stat-value">5</div><div class="stat-label">max concurrent</div></div>
   <div class="stat"><div class="stat-value">SQLite</div><div class="stat-label">memory</div></div>
-</div>
-</section>
-
-<!-- ═══════════════════════ GRAPH PROJECTS ASIDE ═══════════════════════ -->
-<section class="aside-section" id="graph-projects">
-<div class="container">
-<div class="version-header">
-  <div class="version-name">Sidebar: The Graph Thread</div>
-  <div class="version-date">2023–2025</div>
-</div>
-
-<p>Running parallel to BabyAGI, three standalone projects explored a related question: can LLMs build and maintain structured knowledge graphs? Each fed ideas back into the agent line — and the progression from Instagraph to Graphista traces the same arc from "simple LLM hack" to "production memory system" that BabyAGI followed for agents.</p>
-
-<div class="aside-grid">
-
-<div class="aside-card">
-  <div class="aside-card-title">Instagraph</div>
-  <div class="aside-card-date">September 12, 2023</div>
-  <p>Text in, knowledge graph out. A single API call to GPT-4 with a prompt asking it to identify entities and relationships, rendered with Cytoscape.js. No persistence, no schema, no deduplication — just <code>postData("/get_response_data", payload)</code> and a <code>cose</code> layout.</p>
-  <p class="dim">The proof of concept: LLMs can extract structured graphs from unstructured text without custom NLP pipelines.</p>
-</div>
-
-<div class="aside-card">
-  <div class="aside-card-title">MindGraph</div>
-  <div class="aside-card-date">March 16, 2024</div>
-  <p>A Flask app with a plugin integration system, schema-driven entity types, CRUD operations, and search. Uses OpenAI's function calling API with a <code>knowledge_graph</code> function definition to get structured extraction — entities, relationships, and source snippets — rather than hoping the LLM returns valid JSON.</p>
-  <p class="dim">The structured output insight: define the graph schema as a function signature and let the API enforce it. Also introduces the integration manager pattern that reappears in BabyAGI 3's tool registration.</p>
-</div>
-
-<div class="aside-card">
-  <div class="aside-card-title">Graphista</div>
-  <div class="aside-card-date">February 15, 2025</div>
-  <p>Full graph-based memory system. Two LLM loops: <code>ingest()</code> processes text through a SmartNodeProcessor (entity extraction, deduplication, graph updates via chain-of-thought) and <code>ask()</code> answers questions via SmartRetrievalTool with multi-step reasoning. Supports multiple backends (local JSON, Neo4j, FalkorDB), ontology-driven schemas, embeddings, and batch operations.</p>
-  <p class="dim">The memory architecture that BabyAGI 3 absorbed: persistent graph storage, LLM-powered entity extraction, and embedding-based retrieval — all wrapped in a clean <code>Memory</code> class with <code>ingest()</code> and <code>ask()</code>.</p>
-</div>
-
-</div>
-
-<p class="dim">The thread connecting these projects is the shift from "ask the LLM once" (Instagraph) to "let the LLM manage a persistent graph through structured tool calls" (MindGraph → Graphista). BabyAGI 3's SQLite-backed memory with entity extraction and knowledge graph queries is the direct descendant of this line of work — the graph became the agent's memory layer.</p>
-
 </div>
 </section>
 
@@ -1630,43 +1677,28 @@ BabyAGI 3   ██████████████████████�
 <div class="lessons-grid">
 
 <div class="lesson-card" data-num="01">
-  <div class="lesson-title">Explicit planners are fragile</div>
-  <p>Every version that used an LLM to generate and manage a task list struggled with JSON parsing errors, task ID conflicts, and dependency loops. The most robust versions (2o, 3) let the LLM plan implicitly through sequential tool calls.</p>
+  <div class="lesson-title">The task list was the wrong abstraction</div>
+  <p>Six versions refined the explicit task list — single deps, multi deps, parallel DAG, reflective. The breakthrough was abandoning it. Modern tool-calling APIs let the LLM maintain its plan in its own reasoning, which turns out to be more reliable than any external data structure.</p>
 </div>
 
 <div class="lesson-card" data-num="02">
+  <div class="lesson-title">The minimal viable agent is 174 lines</div>
+  <p>Everything beyond BabyAGI 2o's radical compression is error handling, persistence, concurrency, and I/O — the same concerns that dominate any production system, not agent-specific problems. The core loop is <2% of BabyAGI 3's codebase.</p>
+</div>
+
+<div class="lesson-card" data-num="03">
   <div class="lesson-title">Self-improvement needs persistence</div>
   <p>BabyFoxAGI's <code>reflect_skills()</code> identified missing skills but couldn't act on it. BabyAGI 2 stored improvements but lacked the runtime. BabyAGI 3 closes the loop: create tool → persist to DB → reload on startup.</p>
 </div>
 
-<div class="lesson-card" data-num="03">
-  <div class="lesson-title">Context management dwarfs agent logic</div>
-  <p>BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic. The core loop is ~500 lines; infrastructure is ~11,500.</p>
-</div>
-
 <div class="lesson-card" data-num="04">
-  <div class="lesson-title">The minimal viable agent is 174 lines</div>
-  <p>Everything beyond BabyAGI 2o's radical compression is error handling, persistence, concurrency, and I/O — the same concerns that dominate any production system, not agent-specific problems.</p>
+  <div class="lesson-title">Context management dwarfs agent logic</div>
+  <p>BabyAGI 3 dedicates more code to context budgeting, thread trimming, tool result summarization, and overflow recovery than to its actual agent logic. Infrastructure is ~11,500 lines; the core loop is ~500.</p>
 </div>
 
 <div class="lesson-card" data-num="05">
-  <div class="lesson-title">Model-agnosticism is an architectural decision</div>
-  <p>The classic era hardcoded GPT model strings. Switching to LiteLLM in v2/2o was more than convenience — it changed the design from "build for GPT-4's quirks" to "build for any model's capabilities." Every subsequent abstraction got cleaner.</p>
-</div>
-
-<div class="lesson-card" data-num="06">
-  <div class="lesson-title">The task list was the wrong abstraction</div>
-  <p>Six versions refined the task list (single deps → multi deps → parallel → reflective). The breakthrough was abandoning it entirely. Modern tool-calling APIs let the LLM maintain its plan in its own reasoning, which turns out to be more reliable than any external data structure.</p>
-</div>
-
-<div class="lesson-card" data-num="07">
-  <div class="lesson-title">Multi-channel I/O changes the agent's identity</div>
-  <p>When the same agent can receive email, iMessage, and CLI input, the system prompt becomes channel-aware. The agent must adapt tone, format, and access control per-message — a design concern that none of the single-channel versions anticipated.</p>
-</div>
-
-<div class="lesson-card" data-num="08">
   <div class="lesson-title">Graphs beat flat memory</div>
-  <p>The parallel Instagraph → MindGraph → Graphista line proved that LLMs can maintain structured knowledge graphs. BabyAGI 3's memory reflects this: entity extraction, knowledge graph queries, and embedding search — not just a rolling summary or chat log.</p>
+  <p>The parallel Instagraph → MindGraph → Graphista line proved that LLMs can maintain structured knowledge graphs through tool calls. BabyAGI 3's memory absorbed this: entity extraction, knowledge graph queries, and embedding search — not just a rolling summary.</p>
 </div>
 
 </div>
@@ -1870,15 +1902,53 @@ BabyAGI 3   ██████████████████████�
 </div>
 </main>
 
+<!-- ═══════════════════════ IMPACT ═══════════════════════ -->
+<section class="impact-section">
+<div class="container">
+
+<div class="version-header">
+  <div class="version-name">Impact</div>
+</div>
+
+<p>BabyAGI's influence is less about the code itself — most of it was intentionally disposable — and more about what it demonstrated at each stage. The original 138-line script, released days after GPT-4, showed thousands of developers that autonomous agents were not a research project but a weekend hack. Each subsequent version served as a public experiment in a different architectural bet.</p>
+
+<div class="accent-line"></div>
+
+<div class="impact-grid">
+  <div class="impact-stat">
+    <div class="impact-num">20k+</div>
+    <div class="impact-desc">GitHub stars</div>
+  </div>
+  <div class="impact-stat">
+    <div class="impact-num">9</div>
+    <div class="impact-desc">versions across 3 years</div>
+  </div>
+  <div class="impact-stat">
+    <div class="impact-num">138 → 33k</div>
+    <div class="impact-desc">lines of code, first to last</div>
+  </div>
+</div>
+
+<div class="accent-line"></div>
+
+<p>The original release — alongside AutoGPT, which launched the same week — catalyzed the first wave of agent frameworks. LangChain agents, CrewAI, and dozens of others followed within months. BabyAGI's contribution was proving the loop pattern: a while loop, an LLM call, and a task queue is all you need to get emergent multi-step behavior.</p>
+
+<p>The later versions mattered differently. BabyAGI 2o's compression to 174 lines showed that as LLMs improved, most agent scaffolding became unnecessary — the model itself could plan. BabyAGI 3's expansion to 33,000 lines showed the opposite truth: production agents aren't hard because of the AI, they're hard because of everything else.</p>
+
+<p class="dim" style="margin-top: 1.5rem;">The complete source code for all nine versions is available at <a href="https://github.com/yoheinakajima/babyagi" style="color: var(--text-dim);">github.com/yoheinakajima/babyagi</a>.</p>
+
+</div>
+</section>
+
 <footer>
 <div class="container">
+  <div class="accent-line"></div>
   Analysis based on source code from github.com/yoheinakajima/babyagi.<br>
-  Generated February 7, 2026.
+  Generated February 2026.
 </div>
 </footer>
 
 <script>
-// ─── Active nav highlighting via IntersectionObserver ───
 (function() {
   const navLinks = document.querySelectorAll('nav a[href^="#"]');
   const sections = [];
@@ -1887,98 +1957,16 @@ BabyAGI 3   ██████████████████████�
     const el = document.getElementById(id);
     if (el) sections.push({ el, link });
   });
-
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       const match = sections.find(s => s.el === entry.target);
-      if (match) {
-        if (entry.isIntersecting) {
-          navLinks.forEach(l => l.classList.remove('active'));
-          match.link.classList.add('active');
-        }
+      if (match && entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        match.link.classList.add('active');
       }
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
-
   sections.forEach(s => observer.observe(s.el));
-})();
-
-// ─── ASCII "+" background that reacts to mouse ───
-(function() {
-  const canvas = document.getElementById('ascii-bg');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, cols, rows;
-  const GRID = 28;
-  let mouseX = -1000, mouseY = -1000;
-  const RADIUS = 180;
-  const BASE_ALPHA = 0.04;
-  const HOVER_ALPHA = 0.14;
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = document.documentElement.scrollHeight;
-    cols = Math.ceil(W / GRID);
-    rows = Math.ceil(H / GRID);
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.font = '10px "IBM Plex Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    const scrollY = window.scrollY;
-    const absMouseY = mouseY + scrollY;
-
-    for (let r = 0; r < rows; r++) {
-      const y = r * GRID + GRID / 2;
-      // skip rows far from viewport for perf
-      if (y < scrollY - 200 || y > scrollY + window.innerHeight + 200) continue;
-      for (let c = 0; c < cols; c++) {
-        const x = c * GRID + GRID / 2;
-        const dx = x - mouseX;
-        const dy = y - absMouseY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        let alpha = BASE_ALPHA;
-        if (dist < RADIUS) {
-          const t = 1 - dist / RADIUS;
-          alpha = BASE_ALPHA + (HOVER_ALPHA - BASE_ALPHA) * t * t;
-        }
-        ctx.fillStyle = `rgba(180, 172, 160, ${alpha})`;
-        ctx.fillText('+', x, y);
-      }
-    }
-  }
-
-  let raf;
-  function loop() {
-    draw();
-    raf = requestAnimationFrame(loop);
-  }
-
-  window.addEventListener('resize', () => { resize(); });
-  window.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-  window.addEventListener('mouseleave', () => {
-    mouseX = -1000;
-    mouseY = -1000;
-  });
-
-  // Resize on scroll to track full page height
-  let resizeTimeout;
-  window.addEventListener('scroll', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const newH = document.documentElement.scrollHeight;
-      if (Math.abs(newH - H) > 100) resize();
-    }, 200);
-  });
-
-  resize();
-  loop();
 })();
 </script>
 
