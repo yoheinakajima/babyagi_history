@@ -1585,7 +1585,7 @@ while iteration < max_iterations:
 </div>
 </section>
 
-<!-- ═══════════════════════ PIPPIN SIDEBAR ═══════════════════════ -->
+<!-- ═══════════════════════ PIPPIN SIDEBAR (hidden for now) ═══════════════════════
 <section class="aside-section" id="pippin-projects">
 <div class="container">
 <div class="version-header">
@@ -1615,6 +1615,7 @@ while iteration < max_iterations:
 
 </div>
 </section>
+═══════════════════════════════════════════════════════════════ -->
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <section class="version" id="v3">
@@ -2009,87 +2010,59 @@ BabyAGI 3   ██████████████████████�
 </div><!-- close container for full-width timeline -->
 
 <div class="comparison-wrap">
-<table class="comparison-table" style="min-width: 1100px;">
+<table class="comparison-table" style="min-width: 880px;">
 <thead>
 <tr>
   <th></th>
-  <th>Mar '23</th>
-  <th>Apr '23</th>
-  <th>May '23</th>
-  <th>Jun '23</th>
-  <th>Jul '23</th>
-  <th>Sep '23</th>
-  <th>Nov '23</th>
-  <th>Jan '24</th>
-  <th>May '24</th>
-  <th>Jun '24</th>
-  <th>Aug '24</th>
-  <th>Sep '24</th>
-  <th>Oct '24</th>
-  <th>Nov '24</th>
-  <th>Jan '25</th>
-  <th>Mar '25</th>
-  <th>Feb '26</th>
+  <th>Q1 '23</th>
+  <th>Q2 '23</th>
+  <th>Q3 '23</th>
+  <th>Q4 '23</th>
+  <th>Q1 '24</th>
+  <th>Q2 '24</th>
+  <th>Q3 '24</th>
+  <th>Q4 '24</th>
+  <th>Q1 '25</th>
+  <th>Q1 '26</th>
 </tr>
 </thead>
 <tbody>
 <tr>
   <td>BabyAGI</td>
-  <td></td>
-  <td class="highlight">v1 · Bee</td>
-  <td class="highlight">Cat</td>
-  <td class="highlight">Deer</td>
-  <td class="highlight">Elf</td>
-  <td class="highlight">Fox</td>
-  <td></td>
-  <td></td>
+  <td class="highlight">v1</td>
+  <td class="highlight">Bee · Cat · Deer</td>
+  <td class="highlight">Elf · Fox</td>
   <td></td>
   <td></td>
   <td></td>
   <td class="highlight">v2</td>
   <td class="highlight">2o</td>
   <td></td>
-  <td></td>
-  <td></td>
   <td class="highlight">v3</td>
 </tr>
 <tr style="border-bottom: 1px solid var(--border);">
   <td>Models</td>
   <td class="highlight">GPT-4</td>
-  <td></td>
-  <td></td>
   <td>GPT-3.5 16k</td>
-  <td></td>
   <td></td>
   <td>GPT-4 Turbo</td>
   <td></td>
-  <td>GPT-4o</td>
-  <td>Claude 3.5 Sonnet</td>
-  <td></td>
+  <td>GPT-4o · Claude 3.5 Sonnet</td>
   <td>o1</td>
   <td></td>
-  <td></td>
   <td>DeepSeek R1</td>
-  <td></td>
   <td></td>
 </tr>
 <tr>
   <td>Tool calling</td>
   <td></td>
-  <td></td>
-  <td></td>
   <td class="highlight">fn calling API</td>
-  <td></td>
   <td></td>
   <td>Assistants API</td>
   <td></td>
   <td>Claude tool use</td>
   <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
   <td class="highlight">MCP</td>
-  <td></td>
   <td></td>
   <td></td>
 </tr>
@@ -2098,17 +2071,10 @@ BabyAGI 3   ██████████████████████�
   <td></td>
   <td></td>
   <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
   <td>JSON mode</td>
   <td></td>
   <td></td>
-  <td></td>
   <td class="highlight">Structured Outputs</td>
-  <td></td>
-  <td></td>
-  <td></td>
   <td></td>
   <td></td>
   <td></td>
@@ -2119,57 +2085,36 @@ BabyAGI 3   ██████████████████████�
   <td>LangChain agents</td>
   <td></td>
   <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
   <td>CrewAI</td>
   <td>LangGraph</td>
   <td></td>
-  <td></td>
-  <td></td>
-  <td>AutoGen + Semantic Kernel merge</td>
-  <td></td>
-  <td></td>
+  <td>AutoGen + SK merge</td>
   <td>OpenAI Agents SDK</td>
-  <td></td>
+  <td>OpenClaw</td>
 </tr>
 <tr>
   <td>Graph projects</td>
   <td></td>
   <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
   <td class="highlight">Instagraph</td>
   <td></td>
   <td style="font-style: italic; color: var(--text-dim);">MindGraph</td>
-  <td></td>
   <td>GraphRAG</td>
   <td></td>
   <td></td>
-  <td></td>
-  <td></td>
   <td style="font-style: italic; color: var(--text-dim);">Graphista</td>
-  <td></td>
   <td></td>
 </tr>
 <tr style="border-top: 1px solid var(--border-light);">
   <td>BabyAGI insight</td>
   <td></td>
-  <td style="font-style: italic; color: var(--text-dim);">LLMs can chain tasks</td>
-  <td style="font-style: italic; color: var(--text-dim);">plan upfront</td>
-  <td style="font-style: italic; color: var(--text-dim);">parallelize DAG</td>
-  <td style="font-style: italic; color: var(--text-dim);">plugin arch</td>
-  <td style="font-style: italic; color: var(--text-dim);">chat + reflect</td>
-  <td></td>
-  <td></td>
+  <td style="font-style: italic; color: var(--text-dim);">LLMs can chain tasks · plan upfront · parallelize</td>
+  <td style="font-style: italic; color: var(--text-dim);">plugin arch · reflect</td>
   <td></td>
   <td></td>
   <td></td>
   <td style="font-style: italic; color: var(--text-dim);">fns as atoms</td>
   <td style="font-style: italic; color: var(--text-dim);">LLM is planner</td>
-  <td></td>
-  <td></td>
   <td></td>
   <td style="font-style: italic; color: var(--text-dim);">autonomous assistant</td>
 </tr>
@@ -2181,16 +2126,12 @@ BabyAGI 3   ██████████████████████�
 
 <div class="label" style="margin-top: 1.5rem;">How the concepts connect</div>
 
-<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">Tool calling killed the planner</div>
 <p>The evolution of tool calling directly shaped BabyAGI's architecture. The classic era (v1–Fox) predated OpenAI's function calling API — every version had to invent its own mechanism for getting an LLM to choose and invoke tools, typically via fragile JSON parsing from chat completions. When function calling launched in June '23, it validated BabyFoxAGI's approach (which had landed days earlier using the same pattern). But it also made the explicit task list unnecessary: if the model can natively call functions, why maintain a separate planner?</p>
 
-<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">The 13-month absorption</div>
 <p>That insight took 13 months to crystallize. The gap between Fox (Sep '23) and v2 (Sep '24) spans the arrival of the Assistants API, Claude tool use, GPT-4o, CrewAI, LangGraph, and structured outputs — a complete rewiring of the agent infrastructure stack. When BabyAGI returned, it had absorbed all of it: v2 replaced the task list with a function runtime, and 2o compressed the entire agent to 174 lines by delegating planning to native tool calling.</p>
 
-<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">From tools to interop</div>
 <p>The second gap (Oct '24 → Feb '26) coincided with MCP and the OpenAI Agents SDK — the industry's shift from "how do agents call tools" to "how do agents interoperate." BabyAGI 3 reflects this: multi-channel I/O, standardized tool registration, and the production infrastructure (context management, budgeting, error recovery) that none of the earlier versions or frameworks addressed.</p>
 
-<div class="label" style="font-size: 0.58rem; margin-top: 1.5rem; margin-bottom: 0.3rem; color: var(--text-faint);">The quiet revolution</div>
 <p>Structured outputs (Aug '24) are the quiet revolution in this timeline. Before them, every agent framework spent significant code parsing LLM responses into actionable data — BabyAGI's classic era is littered with <code>json.loads()</code> wrapped in try/except. Structured outputs eliminated that entire class of failure, and BabyAGI 2o's radical simplicity (174 lines) is partly possible because it doesn't need response parsing infrastructure.</p>
 
 </section>
@@ -2216,15 +2157,13 @@ BabyAGI 3   ██████████████████████�
 
 <p>Together, the nine versions form a public record of one person learning, in real time, what it actually takes to build an agent that works.</p>
 
-<p class="dim" style="margin-top: 1.5rem;">The complete source code for all nine versions is available at <a href="https://github.com/yoheinakajima/babyagi" style="color: var(--text-dim);">github.com/yoheinakajima/babyagi</a>.</p>
-
 </div>
 </section>
 
 <footer>
 <div class="container">
   <div class="accent-line"></div>
-  Analysis based on source code from github.com/yoheinakajima/babyagi.<br>
+  Analysis based on source code from github.com/yoheinakajima.<br>
   Generated February 2026.
 </div>
 </footer>
