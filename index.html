@@ -676,6 +676,247 @@ nav a.active {
   .impact-grid { grid-template-columns: 1fr; gap: 1rem; }
 }
 
+/* ─── Source button ─── */
+.source-btn {
+  font-family: var(--mono);
+  font-size: inherit;
+  color: var(--text-faint);
+  background: none;
+  border: 1px solid var(--border-light);
+  padding: 0.1rem 0.45rem 0.14rem;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  margin-left: 0.6rem;
+  line-height: 1;
+}
+.source-btn:hover {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--bg-alt);
+}
+
+/* ─── Source modal ─── */
+.source-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.source-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.source-modal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  width: 92vw;
+  max-width: 960px;
+  height: 80vh;
+  max-height: 700px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(8px) scale(0.99);
+  transition: transform 0.25s ease-out;
+}
+.source-overlay.active .source-modal {
+  transform: translateY(0) scale(1);
+}
+.source-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.2rem;
+  border-bottom: 1px solid var(--border-light);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  gap: 0.8rem;
+}
+.source-modal-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+}
+.source-modal-title {
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.source-modal-link {
+  color: var(--text-faint);
+  text-decoration: none;
+  font-size: 0.62rem;
+  border-bottom: 1px solid var(--border-light);
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.source-modal-link:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
+}
+.source-modal-close {
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  line-height: 1;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.source-modal-close:hover { color: var(--text); }
+.source-modal-body {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  overflow: hidden;
+}
+.source-tree {
+  border-right: 1px solid var(--border-light);
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) transparent;
+}
+.source-tree-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--text-dim);
+  padding: 0.18rem 1rem;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.6;
+}
+.source-tree-item:hover {
+  background: var(--bg-alt);
+  color: var(--text);
+}
+.source-tree-item.active {
+  background: var(--bg-alt);
+  color: var(--text);
+  font-weight: 500;
+}
+.source-tree-item.is-folder {
+  color: var(--text);
+  font-weight: 500;
+}
+.source-tree-item .folder-arrow {
+  font-size: 0.5rem;
+  margin-right: 3px;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+.source-tree-item.is-folder.closed .folder-arrow {
+  transform: rotate(0deg);
+}
+.source-tree-item.is-folder.open .folder-arrow {
+  transform: rotate(90deg);
+}
+.source-code-wrap {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+.source-code-path {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--text-faint);
+  padding: 0.4rem 1.2rem;
+  border-bottom: 1px solid var(--border-light);
+  letter-spacing: 0.03em;
+  background: var(--bg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.source-code {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg-alt);
+}
+.source-code-inner {
+  padding: 0.6rem 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.65;
+  white-space: pre;
+  color: var(--text);
+  tab-size: 4;
+}
+.source-line {
+  display: flex;
+  padding: 0 1.2rem 0 0;
+}
+.source-line:hover {
+  background: rgba(0,0,0,0.025);
+}
+.source-line-num {
+  flex-shrink: 0;
+  width: 3.5rem;
+  text-align: right;
+  padding-right: 1rem;
+  color: var(--border);
+  user-select: none;
+  font-size: 0.62rem;
+}
+.source-line-content {
+  flex: 1;
+  min-width: 0;
+}
+.source-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+.source-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+@keyframes source-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.source-loading-dots {
+  animation: source-pulse 1.2s ease-in-out infinite;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   header .title { font-size: 2rem; }
@@ -692,6 +933,20 @@ nav a.active {
     left: 0 !important;
     transform: none !important;
   }
+  .source-modal {
+    width: 97vw;
+    height: 88vh;
+    max-height: none;
+  }
+  .source-modal-body {
+    grid-template-columns: 1fr;
+  }
+  .source-tree {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    max-height: 35vh;
+  }
+  .source-modal-link { display: none; }
 }
 </style>
 </head>
@@ -948,7 +1203,7 @@ nav a.active {
   <div class="version-name">BabyAGI</div>
   <div class="version-date">April 4, 2023</div>
 </div>
-<div class="version-loc">105 lines · single file · Python</div>
+<div class="version-loc">105 lines · single file · Python <button class="source-btn" data-repo="yoheinakajima/babyagi_og" data-name="BabyAGI" data-branch="main">source ↗</button></div>
 
 <p>The original BabyAGI is a deceptively simple infinite loop: execute a task, store the result, create new tasks, reprioritize, repeat. The entire system is three LLM calls chained inside a <code>while True</code>.</p>
 
@@ -1000,7 +1255,7 @@ prioritization_agent(this_task_id)</code></pre>
   <div class="version-name">BabyBeeAGI</div>
   <div class="version-date">April 30, 2023</div>
 </div>
-<div class="version-loc">300 lines · single file · Python</div>
+<div class="version-loc">300 lines · single file · Python <button class="source-btn" data-repo="yoheinakajima/babybeeagi" data-name="BabyBeeAGI" data-branch="main">source ↗</button></div>
 
 <p>BabyBeeAGI introduces two foundational concepts: <strong>task dependencies</strong> and <strong>tools</strong>. Tasks are no longer a flat queue — each task carries a <code>dependent_task_id</code>, a <code>tool</code> specifier, and a <code>status</code>. Pinecone is dropped entirely; context is managed through a <code>session_summary</code>.</p>
 
@@ -1046,7 +1301,7 @@ elif task["tool"] == "web-scrape":
   <div class="version-name">BabyCatAGI</div>
   <div class="version-date">May 13, 2023</div>
 </div>
-<div class="version-loc">320 lines · single file · Python</div>
+<div class="version-loc">320 lines · single file · Python <button class="source-btn" data-repo="yoheinakajima/babycatagi" data-name="BabyCatAGI" data-branch="main">source ↗</button></div>
 
 <p>BabyCatAGI refactors BabyBeeAGI in two important ways. First, task creation is extracted into its own dedicated <code>task_creation_agent</code> that runs once at startup to produce the entire task plan upfront. Second, <code>dependent_task_id</code> becomes <code>dependent_task_ids</code> (plural) — tasks can now depend on multiple predecessors.</p>
 
@@ -1076,7 +1331,7 @@ for i in range(0, len(large_string), chunk_size - overlap):
   <div class="version-name">BabyDeerAGI</div>
   <div class="version-date">June 6, 2023</div>
 </div>
-<div class="version-loc">354 lines · single file · Python</div>
+<div class="version-loc">354 lines · single file · Python <button class="source-btn" data-repo="yoheinakajima/babydeeragi" data-name="BabyDeerAGI" data-branch="main">source ↗</button></div>
 
 <p>BabyDeerAGI's contribution is <strong>parallel execution</strong>. Tasks that have no mutual dependencies can now run concurrently using <code>ThreadPoolExecutor</code>.</p>
 
@@ -1109,7 +1364,7 @@ with ThreadPoolExecutor() as executor:
   <div class="version-name">BabyElfAGI</div>
   <div class="version-date">July 10, 2023</div>
 </div>
-<div class="version-loc">887 lines · 11 files · Python</div>
+<div class="version-loc">887 lines · 11 files · Python <button class="source-btn" data-repo="yoheinakajima/babyagi" data-name="BabyElfAGI" data-branch="babyelfagi">source ↗</button></div>
 
 <p>BabyElfAGI is the first multi-file architecture. The monolithic script splits into a <code>SkillRegistry</code>, a <code>TaskRegistry</code>, and individual skill modules. This is the birth of the <strong>plugin system</strong>.</p>
 
@@ -1155,7 +1410,7 @@ BabyElfAGI/
   <div class="version-name">BabyFoxAGI</div>
   <div class="version-date">September 1, 2023</div>
 </div>
-<div class="version-loc">~2,300 lines · 25+ files · Python + Flask</div>
+<div class="version-loc">~2,300 lines · 25+ files · Python + Flask <button class="source-btn" data-repo="yoheinakajima/babyfoxagi" data-name="BabyFoxAGI" data-branch="main">source ↗</button></div>
 
 <p>BabyFoxAGI adds a <strong>web UI and chat interface</strong>, powered by Flask. The agent is no longer a batch script — it's an interactive application. A user sends a message, and the system routes it to one of three paths: direct chat response, single skill execution, or full task list generation.</p>
 
@@ -1242,7 +1497,7 @@ objective ──► reflect_on_objective() ──► create_tasklist()
   <div class="version-name">BabyAGI 2</div>
   <div class="version-date">September 30, 2024</div>
 </div>
-<div class="version-loc">~5,960 lines · 40+ files · Python package</div>
+<div class="version-loc">~5,960 lines · 40+ files · Python package <button class="source-btn" data-repo="yoheinakajima/babyagi" data-name="BabyAGI 2" data-branch="main">source ↗</button></div>
 
 <p>BabyAGI 2 is a complete rewrite, informed by the graph experiments above. The concept shifts from "task list execution" to <strong>functions as first-class entities</strong>. The core abstraction is <code>Functionz</code> — a framework where every capability is a registered function with versioning, dependency resolution, logging, triggers, and a database backend. MindGraph's integration manager pattern reappears here as a general-purpose function registry.</p>
 
@@ -1296,7 +1551,7 @@ def search_web(query: str) -> dict:
   <div class="version-name">BabyAGI 2o</div>
   <div class="version-date">October 17, 2024</div>
 </div>
-<div class="version-loc">174 lines · single file · Python</div>
+<div class="version-loc">174 lines · single file · Python <button class="source-btn" data-repo="yoheinakajima/babyagi-2o" data-name="BabyAGI 2o" data-branch="main">source ↗</button></div>
 
 <p>BabyAGI 2o is a radical compression. The entire agent fits in 174 lines. It uses LiteLLM for model-agnostic inference and the native <strong>tool calling</strong> API. The agent starts with exactly three tools: <code>create_or_update_tool</code>, <code>install_package</code>, and <code>task_completed</code>.</p>
 
@@ -1367,7 +1622,7 @@ while iteration < max_iterations:
   <div class="version-name">BabyAGI 3</div>
   <div class="version-date">February 7, 2026</div>
 </div>
-<div class="version-loc">~33,500 lines · 70+ files · Python (async)</div>
+<div class="version-loc">~33,500 lines · 70+ files · Python (async) <button class="source-btn" data-repo="yoheinakajima/babyagi3" data-name="BabyAGI 3" data-branch="main">source ↗</button></div>
 
 <p>BabyAGI 3 is an autonomous assistant — not a task executor but a persistent agent that listens, remembers, and acts across channels. The core insight from the codebase docstring: <em>"Everything is still a message."</em> User input, tool execution, background objectives, scheduled tasks — all messages in conversation threads. The architecture extends the BabyAGI 2o pattern (LLM + tool loop) but adds every production concern: memory, multi-channel I/O, scheduling, budget tracking, context management, self-improvement, and error recovery.</p>
 
@@ -1974,8 +2229,33 @@ BabyAGI 3   ██████████████████████�
 </div>
 </footer>
 
+<!-- Source code modal -->
+<div class="source-overlay" id="sourceOverlay">
+  <div class="source-modal">
+    <div class="source-modal-header">
+      <div class="source-modal-left">
+        <span class="source-modal-title" id="sourceTitle"></span>
+        <a class="source-modal-link" id="sourceLink" href="#" target="_blank" rel="noopener">github ↗</a>
+      </div>
+      <button class="source-modal-close" id="sourceClose" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="source-modal-body">
+      <div class="source-tree" id="sourceTree">
+        <div class="source-loading"><span class="source-loading-dots">loading...</span></div>
+      </div>
+      <div class="source-code-wrap">
+        <div class="source-code-path" id="sourceCodePath">&nbsp;</div>
+        <div class="source-code" id="sourceCode">
+          <div class="source-placeholder">select a file to view</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 (function() {
+  /* ── Navigation scroll tracking ── */
   const navLinks = document.querySelectorAll('nav a[href^="#"]');
   const sections = [];
   navLinks.forEach(link => {
@@ -1993,6 +2273,211 @@ BabyAGI 3   ██████████████████████�
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
   sections.forEach(s => observer.observe(s.el));
+
+  /* ── Source code modal ── */
+  var treeCache = {};
+  var fileCache = {};
+  var overlay = document.getElementById('sourceOverlay');
+  var titleEl = document.getElementById('sourceTitle');
+  var linkEl = document.getElementById('sourceLink');
+  var treeEl = document.getElementById('sourceTree');
+  var codeEl = document.getElementById('sourceCode');
+  var pathEl = document.getElementById('sourceCodePath');
+  var closeBtn = document.getElementById('sourceClose');
+
+  function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function isBinary(path) {
+    var exts = ['.png','.jpg','.jpeg','.gif','.ico','.bmp','.webp',
+      '.woff','.woff2','.ttf','.eot','.otf',
+      '.mp3','.mp4','.wav','.ogg','.webm','.avi',
+      '.zip','.gz','.tar','.bz2','.7z','.rar',
+      '.pdf','.pyc','.pyd','.exe','.dll','.so','.o',
+      '.db','.sqlite','.sqlite3','.pkl','.pickle',
+      '.DS_Store','.class','.jar'];
+    var dot = path.lastIndexOf('.');
+    if (dot === -1) return false;
+    return exts.indexOf(path.substring(dot).toLowerCase()) !== -1;
+  }
+
+  function openModal(repo, name, branch) {
+    titleEl.textContent = name;
+    linkEl.href = 'https://github.com/' + repo;
+    if (branch && branch !== 'main' && branch !== 'master') {
+      linkEl.href = 'https://github.com/' + repo + '/tree/' + branch;
+    }
+    treeEl.innerHTML = '<div class="source-loading"><span class="source-loading-dots">loading\u2026</span></div>';
+    codeEl.innerHTML = '<div class="source-placeholder">select a file to view</div>';
+    pathEl.innerHTML = '&nbsp;';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    fetchTree(repo, branch);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+  });
+
+  function fetchTree(repo, branch) {
+    var cacheKey = repo + '/' + branch;
+    if (treeCache[cacheKey]) {
+      renderTree(treeCache[cacheKey], repo, treeCache[cacheKey]._branch);
+      return;
+    }
+
+    var branches = [branch || 'main', 'master'];
+    // Remove duplicates
+    if (branches[0] === branches[1]) branches = [branches[0]];
+
+    tryBranch(repo, branches, 0, cacheKey);
+  }
+
+  function tryBranch(repo, branches, idx, cacheKey) {
+    if (idx >= branches.length) {
+      treeEl.innerHTML = '<div class="source-loading">could not load repository</div>';
+      return;
+    }
+    var br = branches[idx];
+    var url = 'https://api.github.com/repos/' + repo + '/git/trees/' + br + '?recursive=1';
+    fetch(url).then(function(res) {
+      if (!res.ok) throw new Error(res.status);
+      return res.json();
+    }).then(function(data) {
+      var result = { items: data.tree || [], _branch: br };
+      treeCache[cacheKey] = result;
+      renderTree(result, repo, br);
+    }).catch(function() {
+      tryBranch(repo, branches, idx + 1, cacheKey);
+    });
+  }
+
+  function buildTree(items) {
+    var root = {};
+    items.forEach(function(item) {
+      if (item.type !== 'blob') return;
+      var parts = item.path.split('/');
+      var cur = root;
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        if (i === parts.length - 1) {
+          cur[p] = { _file: true, path: item.path, size: item.size || 0 };
+        } else {
+          if (!cur[p] || cur[p]._file) cur[p] = {};
+          cur = cur[p];
+        }
+      }
+    });
+    return root;
+  }
+
+  function renderTree(data, repo, branch) {
+    var tree = buildTree(data.items);
+    treeEl.innerHTML = '';
+    renderNode(tree, treeEl, repo, branch, 0);
+  }
+
+  function renderNode(node, parent, repo, branch, depth) {
+    var entries = Object.keys(node).sort(function(a, b) {
+      var aDir = node[a] && !node[a]._file;
+      var bDir = node[b] && !node[b]._file;
+      if (aDir && !bDir) return -1;
+      if (!aDir && bDir) return 1;
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    });
+
+    entries.forEach(function(name) {
+      var val = node[name];
+      var isFile = val && val._file;
+      var btn = document.createElement('button');
+      btn.className = 'source-tree-item';
+      btn.style.paddingLeft = (0.8 + depth * 0.75) + 'rem';
+
+      if (isFile) {
+        btn.textContent = name;
+        btn.addEventListener('click', function() {
+          var prev = treeEl.querySelector('.source-tree-item.active');
+          if (prev) prev.classList.remove('active');
+          btn.classList.add('active');
+          loadFile(repo, branch, val.path);
+        });
+        parent.appendChild(btn);
+      } else {
+        btn.className += ' is-folder open';
+        btn.innerHTML = '<span class="folder-arrow">\u25B8</span> ' + escapeHtml(name);
+        var container = document.createElement('div');
+        btn.addEventListener('click', function() {
+          var isOpen = btn.classList.contains('open');
+          btn.classList.toggle('open');
+          btn.classList.toggle('closed');
+          container.style.display = isOpen ? 'none' : '';
+        });
+        parent.appendChild(btn);
+        renderNode(val, container, repo, branch, depth + 1);
+        parent.appendChild(container);
+      }
+    });
+  }
+
+  function loadFile(repo, branch, path) {
+    pathEl.textContent = path;
+    if (isBinary(path)) {
+      codeEl.innerHTML = '<div class="source-placeholder">binary file \u2014 <a href="https://github.com/' +
+        repo + '/blob/' + branch + '/' + path + '" target="_blank" rel="noopener" style="color:var(--text-dim);border-bottom:1px solid var(--border)">view on GitHub</a></div>';
+      return;
+    }
+
+    var key = repo + '/' + branch + '/' + path;
+    if (fileCache[key]) {
+      renderCode(fileCache[key]);
+      return;
+    }
+
+    codeEl.innerHTML = '<div class="source-loading"><span class="source-loading-dots">loading\u2026</span></div>';
+    var url = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + encodeURIComponent(path).replace(/%2F/g, '/');
+    fetch(url).then(function(res) {
+      if (!res.ok) throw new Error(res.status);
+      return res.text();
+    }).then(function(text) {
+      // Truncate very large files
+      if (text.length > 500000) {
+        text = text.substring(0, 500000) + '\n\n... (truncated — file too large, view full file on GitHub)';
+      }
+      fileCache[key] = text;
+      renderCode(text);
+    }).catch(function() {
+      codeEl.innerHTML = '<div class="source-placeholder">could not load file</div>';
+    });
+  }
+
+  function renderCode(text) {
+    var lines = text.split('\n');
+    var html = [];
+    for (var i = 0; i < lines.length; i++) {
+      html.push('<div class="source-line"><span class="source-line-num">' + (i + 1) +
+        '</span><span class="source-line-content">' + escapeHtml(lines[i]) + '</span></div>');
+    }
+    codeEl.innerHTML = '<div class="source-code-inner">' + html.join('') + '</div>';
+    codeEl.scrollTop = 0;
+  }
+
+  /* ── Button handlers ── */
+  document.querySelectorAll('.source-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      openModal(btn.dataset.repo, btn.dataset.name, btn.dataset.branch);
+    });
+  });
 })();
 </script>
 
